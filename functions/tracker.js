@@ -68,9 +68,9 @@ export async function onRequestPost(context) {
     const fbpSource = fbp ? (sessionData.fbp ? 'session' : 'body') : '';
     const fbcSource = fbc ? (sessionData.fbc ? 'session' : 'body') : '';
 
-    // IP e User-Agent: para CRM não usa dados do admin — usa sessão original se disponível
-    const ip        = isCRM ? '' : requestIp;
-    const userAgent = isCRM ? (sessionData.ua || '') : requestUserAgent;
+    // IP e User-Agent: para CRM usa dados da sessão original do lead (não do admin)
+    const ip        = isCRM ? (sessionData.client_ip || '') : requestIp;
+    const userAgent = isCRM ? (sessionData.ua        || '') : requestUserAgent;
 
     // GA4 client_id: para CRM usa sessão original do lead
     const gaRaw      = isCRM ? '' : (cookies['_ga'] || '');

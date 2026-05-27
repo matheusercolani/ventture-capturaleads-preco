@@ -31,6 +31,9 @@ export async function onRequest(context) {
     ? `fb.1.${Date.now()}.${fbclid}`
     : (cookies['_fbc'] || '');
 
+  const ua       = request.headers.get('User-Agent')      || '';
+  const clientIp = request.headers.get('CF-Connecting-IP') || '';
+
   const domain     = computeCookieDomain(url.hostname);
   const domainAttr = domain ? `Domain=${domain}; ` : '';
   const cookieBase = `${domainAttr}Path=/; Max-Age=34560000; SameSite=Lax`;
@@ -46,8 +49,8 @@ export async function onRequest(context) {
   if (env.DB) {
     context.waitUntil(
       env.DB.prepare(`
-        INSERT INTO sessions (sid, fbp, fbc, fbclid, gclid, utm_source, utm_medium, utm_campaign, utm_content, utm_term)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO sessions (sid, fbp, fbc, fbclid, gclid, utm_source, utm_medium, utm_campaign, utm_content, utm_term, ua, client_ip)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(sid) DO UPDATE SET
           fbp          = CASE WHEN excluded.fbp          != '' THEN excluded.fbp          ELSE fbp          END,
           fbc          = CASE WHEN excluded.fbc          != '' THEN excluded.fbc          ELSE fbc          END,
@@ -58,8 +61,10 @@ export async function onRequest(context) {
           utm_campaign = CASE WHEN excluded.utm_campaign != '' THEN excluded.utm_campaign ELSE utm_campaign END,
           utm_content  = CASE WHEN excluded.utm_content  != '' THEN excluded.utm_content  ELSE utm_content  END,
           utm_term     = CASE WHEN excluded.utm_term     != '' THEN excluded.utm_term     ELSE utm_term     END,
+          ua           = CASE WHEN excluded.ua           != '' THEN excluded.ua           ELSE ua           END,
+          client_ip    = CASE WHEN excluded.client_ip    != '' THEN excluded.client_ip    ELSE client_ip    END,
           updated_at   = datetime('now')
-      `).bind(sid, fbp, fbc, fbclid, gclid, utmSource, utmMedium, utmCampaign, utmContent, utmTerm).run()
+      `).bind(sid, fbp, fbc, fbclid, gclid, utmSource, utmMedium, utmCampaign, utmContent, utmTerm, ua, clientIp).run()
     );
   }
 

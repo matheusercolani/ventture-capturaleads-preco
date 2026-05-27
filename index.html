@@ -1059,8 +1059,9 @@
       }
 
       fetch('/tracker', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method:   'POST',
+        keepalive: true,
+        headers:  { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           event_name:  eventName,
           event_id:    eventId,
@@ -1074,8 +1075,11 @@
       }).catch(function() {});
     }
 
-    // PageView — client Pixel recebe o eventID para deduplicação com CAPI
-    track('PageView', {}, {});
+    // PageView — passa dados do usuário caso já tenha preenchido o form antes (returning user)
+    var _vtUser = (function() {
+      try { return JSON.parse(localStorage.getItem('vt_user') || '{}'); } catch(e) { return {}; }
+    })();
+    track('PageView', { em: _vtUser.em || '', ph: _vtUser.ph || '', fn: _vtUser.fn || '' }, {});
 
     /* ── SCROLL DEPTH ──────────────────────────────────────────────────────── */
     (function() {
@@ -1109,6 +1113,7 @@
       leadData.nome     = document.getElementById('nome').value.trim();
       leadData.whatsapp = document.getElementById('whatsapp').value.trim();
       leadData.email    = document.getElementById('email').value.trim();
+      leadData.leadId   = null;
 
       track('Lead', {
         em: leadData.email,
@@ -1123,6 +1128,21 @@
           fn: leadData.nome     || '',
         }));
       } catch(e) {}
+
+      // Salva o lead imediatamente — garante captura mesmo se o usuário fechar o modal
+      fetch('/api/submit', {
+        method:    'POST',
+        keepalive: true,
+        headers:   { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome:     leadData.nome,
+          whatsapp: leadData.whatsapp,
+          email:    leadData.email || '',
+        }),
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d && d.id) leadData.leadId = d.id; })
+      .catch(function() {});
 
       openModal();
     }
@@ -1158,17 +1178,28 @@
         });
       }
 
-      // Persiste no D1 via API
-      fetch('/api/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nome:        leadData.nome,
-          whatsapp:    leadData.whatsapp,
-          email:       leadData.email || '',
-          faturamento: value,
-        }),
-      }).catch(function(){});
+      // Atualiza faturamento no D1: usa PATCH se tiver o ID do lead já salvo,
+      // ou salva completo como fallback (ex: resposta do submit ainda não chegou)
+      if (leadData.leadId) {
+        fetch('/api/submit/faturamento', {
+          method:    'POST',
+          keepalive: true,
+          headers:   { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: leadData.leadId, faturamento: value }),
+        }).catch(function() {});
+      } else {
+        fetch('/api/submit', {
+          method:    'POST',
+          keepalive: true,
+          headers:   { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome:        leadData.nome,
+            whatsapp:    leadData.whatsapp,
+            email:       leadData.email || '',
+            faturamento: value,
+          }),
+        }).catch(function() {});
+      }
 
       setTimeout(function() {
         document.getElementById('progressFill').style.width = '100%';

@@ -12,11 +12,11 @@ export async function onRequestPost(context) {
   const sidMatch     = cookieHeader.match(/_krob_sid=([^;]+)/);
   const session_id   = sidMatch ? decodeURIComponent(sidMatch[1]) : '';
 
-  await env.DB.prepare(
+  const result = await env.DB.prepare(
     'INSERT INTO leads (nome, whatsapp, email, faturamento, session_id) VALUES (?, ?, ?, ?, ?)'
   ).bind(nome || '', whatsapp || '', email || '', faturamento || '', session_id).run();
 
-  return json({ ok: true });
+  return json({ ok: true, id: result.meta.last_row_id });
 }
 
 function json(body, status = 200) {
