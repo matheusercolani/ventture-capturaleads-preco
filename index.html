@@ -716,7 +716,11 @@
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
   document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init','1290709392346372');
+  (function() {
+    var u = {};
+    try { u = JSON.parse(localStorage.getItem('vt_user') || '{}'); } catch(e) {}
+    fbq('init', '1290709392346372', { em: u.em || '', ph: u.ph || '', fn: u.fn || '' });
+  })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=1290709392346372&ev=PageView&noscript=1"/></noscript>
@@ -1035,6 +1039,13 @@
       return m ? decodeURIComponent(m[1]) : '';
     }
 
+    function buildFbc() {
+      try {
+        var fbclid = new URLSearchParams(window.location.search).get('fbclid');
+        return fbclid ? 'fb.1.' + Date.now() + '.' + fbclid : '';
+      } catch(e) { return ''; }
+    }
+
     function track(eventName, userData, customData) {
       var eventId    = genEventId();
       var isStandard = ['PageView', 'Lead'].indexOf(eventName) !== -1;
@@ -1057,7 +1068,7 @@
           custom_data: customData || {},
           source_url:  window.location.href,
           fbp:         getCookie('_fbp'),
-          fbc:         getCookie('_fbc'),
+          fbc:         getCookie('_fbc') || buildFbc(),
           session_id:  getCookie('_krob_sid'),
         }),
       }).catch(function() {});
@@ -1104,6 +1115,14 @@
         ph: leadData.whatsapp,
         fn: leadData.nome,
       }, { currency: 'BRL' });
+
+      try {
+        localStorage.setItem('vt_user', JSON.stringify({
+          em: leadData.email    || '',
+          ph: leadData.whatsapp || '',
+          fn: leadData.nome     || '',
+        }));
+      } catch(e) {}
 
       openModal();
     }
