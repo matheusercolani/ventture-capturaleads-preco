@@ -1317,6 +1317,16 @@
       <div class="chart-bars" id="chartBars">
         <p style="color:var(--dim);font-size:0.82rem;">Sem dados ainda.</p>
       </div>
+      <div id="fatProgress" style="display:none; margin-top:14px; padding:14px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.75rem;color:var(--mid);">Leads categorizados</span>
+          <span id="fatProgressLabel" style="font-size:0.75rem;font-weight:700;color:var(--white);"></span>
+        </div>
+        <div style="height:5px;background:var(--raise);border-radius:99px;overflow:hidden;">
+          <div id="fatProgressBar" style="height:100%;border-radius:99px;background:var(--gold);transition:width 0.6s ease;width:0%"></div>
+        </div>
+        <div id="fatProgressSub" style="font-size:0.7rem;color:var(--dim);margin-top:6px;"></div>
+      </div>
     </div>
 
   </div><!-- /page-inner -->
@@ -1854,6 +1864,26 @@
           '</div>';
       });
       document.getElementById('chartBars').innerHTML = html || '<p style="color:var(--dim);font-size:0.82rem;">Sem dados ainda.</p>';
+
+      // Progresso de categorização
+      var categorizados = leads.filter(function(l) { return !!l.faturamento; }).length;
+      var semFat        = leads.length - categorizados;
+      var fatPct        = leads.length ? Math.round(categorizados / leads.length * 100) : 0;
+      var progressEl    = document.getElementById('fatProgress');
+      if (leads.length) {
+        progressEl.style.display = 'block';
+        document.getElementById('fatProgressBar').style.width  = fatPct + '%';
+        document.getElementById('fatProgressBar').style.background =
+          fatPct >= 80 ? 'var(--green)' : fatPct >= 50 ? 'var(--gold)' : 'var(--red)';
+        document.getElementById('fatProgressLabel').textContent =
+          categorizados + ' de ' + leads.length + ' (' + fatPct + '%)';
+        document.getElementById('fatProgressSub').textContent =
+          semFat > 0
+            ? semFat + ' lead' + (semFat > 1 ? 's' : '') + ' ainda sem faixa definida'
+            : 'Todos os leads estão categorizados ✓';
+      } else {
+        progressEl.style.display = 'none';
+      }
 
       renderDailyChart(leads);
     }
