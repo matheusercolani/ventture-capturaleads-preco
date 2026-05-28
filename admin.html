@@ -361,6 +361,22 @@
       width: 40px;
     }
 
+    .td-actions { width: 40px; text-align: center; }
+
+    .btn-row-del {
+      background: none;
+      border: none;
+      color: var(--dim);
+      cursor: pointer;
+      padding: 5px 7px;
+      border-radius: 5px;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.15s, color 0.15s, background 0.15s;
+    }
+    tbody tr:hover .btn-row-del { opacity: 1; }
+    .btn-row-del:hover { color: var(--red); background: rgba(217,64,64,0.08); }
+
     /* ── EMPTY STATE ─────────────────────────────────── */
     .empty {
       text-align: center;
@@ -1313,6 +1329,7 @@
       <input type="text" id="searchInput" placeholder="Buscar por nome, WhatsApp ou e-mail…" oninput="renderTable()" />
       <select id="filterFat" onchange="renderTable()">
         <option value="">Todas as faixas</option>
+        <option value="__sem__">Sem faturamento</option>
         <option value="Até R$20 mil">Até R$20 mil</option>
         <option value="R$50 mil">R$50 mil</option>
         <option value="R$100 mil">R$100 mil</option>
@@ -1333,6 +1350,7 @@
             <th>Faturamento</th>
             <th>Etapa CRM</th>
             <th>Data / Hora</th>
+            <th class="td-actions"></th>
           </tr>
         </thead>
         <tbody id="leadsBody"></tbody>
@@ -1851,7 +1869,8 @@
           l.nome.toLowerCase().includes(search) ||
           l.whatsapp.includes(search) ||
           (l.email && l.email.toLowerCase().includes(search));
-        var matchFat = !filter || l.faturamento === filter;
+        var matchFat = !filter ||
+          (filter === '__sem__' ? !l.faturamento : l.faturamento === filter);
         return matchSearch && matchFat;
       });
 
@@ -1869,6 +1888,7 @@
 
       tbody.innerHTML = filtered.map(function(l) {
         var fi = fatIdx(l.faturamento);
+        var trashSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
         return '<tr>' +
           '<td class="td-idx">' + l._idx + '</td>' +
           '<td class="td-name" style="cursor:pointer" onclick="openDrawerByIdx(' + (l._idx-1) + ')">' + esc(l.nome) + '</td>' +
@@ -1877,8 +1897,19 @@
           '<td>' + (l.faturamento ? '<span class="badge-fat ' + FAT_CLASS[fi] + '">' + esc(l.faturamento) + '</span>' : '<span style="color:var(--dim)">—</span>') + '</td>' +
           '<td><span style="font-size:0.72rem;color:var(--dim)">' + esc(l.etapa || 'Sem contato') + '</span></td>' +
           '<td class="td-time">' + fmtDate(l.timestamp) + '</td>' +
+          '<td class="td-actions"><button class="btn-row-del" onclick="deleteLead(' + l.id + ',event)" title="Excluir lead">' + trashSvg + '</button></td>' +
           '</tr>';
       }).join('');
+    }
+
+    async function deleteLead(id, e) {
+      e.stopPropagation();
+      if (!confirm('Excluir este lead? A ação não pode ser desfeita.')) return;
+      var result = await api('DELETE', '/api/leads/' + id);
+      if (!result) return;
+      _leads = _leads.filter(function(l) { return l.id !== id; });
+      renderStats(_leads);
+      renderTable();
     }
 
     function esc(s) {
