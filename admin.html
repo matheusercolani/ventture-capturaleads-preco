@@ -1272,10 +1272,19 @@
     <div class="daily-chart-wrap" id="dailyChartSection">
       <div class="daily-chart-header">
         <div class="chart-title" style="margin-bottom:0">Leads por dia</div>
-        <div class="period-btns">
-          <button class="period-btn" onclick="setChartPeriod(7,this)">7D</button>
-          <button class="period-btn active" onclick="setChartPeriod(30,this)">30D</button>
-          <button class="period-btn" onclick="setChartPeriod(90,this)">90D</button>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="dash-daterange">
+            <input type="date" id="chartSince" onchange="chartCustomRange()">
+            <span style="color:var(--dim);font-size:0.8rem;">→</span>
+            <input type="date" id="chartUntil" onchange="chartCustomRange()">
+          </div>
+          <div class="period-btns">
+            <button class="period-btn" onclick="chartPreset('hoje',this)">Hoje</button>
+            <button class="period-btn" onclick="chartPreset('ontem',this)">Ontem</button>
+            <button class="period-btn" onclick="chartPreset('7d',this)">7D</button>
+            <button class="period-btn" onclick="chartPreset('14d',this)">14D</button>
+            <button class="period-btn" id="chartBtn30d" onclick="chartPreset('30d',this)">30D</button>
+          </div>
         </div>
       </div>
       <canvas id="dailyCanvas" height="160"></canvas>
@@ -1622,18 +1631,48 @@
     }
 
     /* ── GRÁFICO DIÁRIO ──────────────────────────────── */
-    var _chartDays = 30;
+    var _chartSince = '';
+    var _chartUntil = '';
 
-    function setChartPeriod(days, btn) {
-      _chartDays = days;
+    function localDateStr(date) {
+      return date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0');
+    }
+
+    function chartPreset(key, btn) {
+      var today = new Date();
+      var since, until;
+      if (key === 'hoje') {
+        since = until = localDateStr(today);
+      } else if (key === 'ontem') {
+        var y = new Date(today); y.setDate(y.getDate() - 1);
+        since = until = localDateStr(y);
+      } else {
+        var n = key === '7d' ? 7 : key === '14d' ? 14 : 30;
+        var s = new Date(today); s.setDate(s.getDate() - n + 1);
+        since = localDateStr(s); until = localDateStr(today);
+      }
+      document.getElementById('chartSince').value = since;
+      document.getElementById('chartUntil').value  = until;
       document.querySelectorAll('.period-btn').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
+      _chartSince = since; _chartUntil = until;
+      renderDailyChart(_leads);
+    }
+
+    function chartCustomRange() {
+      var since = document.getElementById('chartSince').value;
+      var until = document.getElementById('chartUntil').value;
+      if (!since || !until) return;
+      document.querySelectorAll('.period-btn').forEach(function(b) { b.classList.remove('active'); });
+      _chartSince = since; _chartUntil = until;
       renderDailyChart(_leads);
     }
 
     function renderDailyChart(leads) {
       var canvas = document.getElementById('dailyCanvas');
-      if (!canvas) return;
+      if (!canvas || !_chartSince || !_chartUntil) return;
 
       var isLight = document.documentElement.getAttribute('data-theme') === 'light';
       var gold     = isLight ? '#c87f00'               : '#E8A000';
@@ -1653,20 +1692,11 @@
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, W, H);
 
-      // Gera datas do período
-      var today = new Date(); today.setHours(0,0,0,0);
-      var days  = [];
-      for (var i = _chartDays - 1; i >= 0; i--) {
-        var d = new Date(today); d.setDate(d.getDate() - i);
-        days.push(d);
-      }
-
-      // Conta leads por dia em horário local (evita erro de fuso UTC vs Brasil)
-      function localDateStr(date) {
-        return date.getFullYear() + '-' +
-          String(date.getMonth() + 1).padStart(2, '0') + '-' +
-          String(date.getDate()).padStart(2, '0');
-      }
+      // Gera datas do intervalo selecionado
+      var days = [];
+      var cur  = new Date(_chartSince + 'T00:00:00');
+      var end  = new Date(_chartUntil + 'T00:00:00');
+      while (cur <= end) { days.push(new Date(cur)); cur.setDate(cur.getDate() + 1); }
 
       var counts = days.map(function(d) {
         var ds = localDateStr(d);
@@ -2551,10 +2581,14 @@
     }
 
     window.addEventListener('resize', function() {
+      // Re-renderiza gráfico principal
+      if (_chartSince && _chartUntil && document.getElementById('dailyChartSection').style.display !== 'none') {
+        renderDailyChart(_leads);
+      }
+      // Re-renderiza gráfico do dashboard Meta
       var s = document.getElementById('dashSince').value;
       var u = document.getElementById('dashUntil').value;
       if (s && u && document.getElementById('dashView').style.display !== 'none') {
-        // só re-renderiza o gráfico sem rebuscar dados
         var cd = window._lastCrmDaily || [];
         renderDashChart(s, u, cd);
       }
@@ -2562,6 +2596,8 @@
 
     async function init() {
       if (!getToken()) { window.location.href = '/login'; return; }
+      // Inicializa o gráfico com 30D antes de carregar os dados
+      chartPreset('30d', document.getElementById('chartBtn30d'));
       await loadLeads();
       renderStats(_leads);
       renderTable();
