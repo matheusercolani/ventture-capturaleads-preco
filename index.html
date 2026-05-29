@@ -1108,6 +1108,8 @@
 
     /* ── FORM ──────────────────────────────────────────────────────────────── */
 
+    var _submitPromise = null;
+
     function handleSubmit(e) {
       e.preventDefault();
       leadData.nome     = document.getElementById('nome').value.trim();
@@ -1129,8 +1131,9 @@
         }));
       } catch(e) {}
 
-      // Salva o lead imediatamente — garante captura mesmo se o usuário fechar o modal
-      fetch('/api/submit', {
+      // Salva imediatamente e guarda a promise — selectOption vai aguardá-la
+      // antes de decidir se faz PATCH ou novo insert, evitando race condition
+      _submitPromise = fetch('/api/submit', {
         method:    'POST',
         keepalive: true,
         headers:   { 'Content-Type': 'application/json' },
@@ -1158,7 +1161,7 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function selectOption(btn, value) {
+    async function selectOption(btn, value) {
       document.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       document.querySelectorAll('.opt').forEach(function(b) { b.disabled = true; });
@@ -1178,26 +1181,16 @@
         });
       }
 
-      // Atualiza faturamento no D1: usa PATCH se tiver o ID do lead já salvo,
-      // ou salva completo como fallback (ex: resposta do submit ainda não chegou)
+      // Aguarda o save inicial terminar (evita race condition que gerava duplicatas)
+      if (_submitPromise) await _submitPromise;
+
+      // Atualiza o faturamento do lead já salvo — nunca cria um segundo registro
       if (leadData.leadId) {
         fetch('/api/submit/faturamento', {
           method:    'POST',
           keepalive: true,
           headers:   { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: leadData.leadId, faturamento: value }),
-        }).catch(function() {});
-      } else {
-        fetch('/api/submit', {
-          method:    'POST',
-          keepalive: true,
-          headers:   { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            nome:        leadData.nome,
-            whatsapp:    leadData.whatsapp,
-            email:       leadData.email || '',
-            faturamento: value,
-          }),
         }).catch(function() {});
       }
 
