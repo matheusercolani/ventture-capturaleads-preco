@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Diagnóstico de Precificação – Ventture</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" /></noscript>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0b0b0b;
+      --surface: #131313;
+      --border:  rgba(255,255,255,0.07);
+      --gold:    #E8A000;
+      --gold-dim:rgba(232,160,0,0.08);
+      --gold-bd: rgba(232,160,0,0.35);
+      --white:   #f0f0f0;
+      --mid:     #999;
+      --dim:     #555;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    /* ── TARJA TOPO ── */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--gold);
+      color: #0b0b0b;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-align: center;
+      padding: 10px 16px;
+      z-index: 100;
+    }
+
+    body {
+      padding-top: 88px;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 48px;
+      text-decoration: none;
+    }
+    .logo svg { width: 26px; height: 26px; }
+    .logo-name {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+
+    /* ── HEADER ── */
+    .quiz-header { width: 100%; max-width: 560px; margin-bottom: 32px; }
+
+    .quiz-label {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .quiz-subtitle {
+      color: var(--mid);
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+    .quiz-subtitle strong { color: var(--white); font-weight: 600; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      width: 100%;
+      height: 5px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 99px;
+      transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    }
+    .progress-label {
+      color: var(--dim);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: #111;
+      border: 1px solid var(--gold-bd);
+      border-radius: 16px;
+      padding: 40px 36px;
+    }
+
+    .question {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: clamp(1.35rem, 4vw, 1.7rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 28px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── OPTIONS ── */
+    .options { display: flex; flex-direction: column; gap: 12px; }
+
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      padding: 17px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      letter-spacing: 0.04em;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .opt:hover  { background: #222; border-color: rgba(232,160,0,0.3); }
+    .opt:active { transform: scale(0.98); }
+
+    .opt-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--mid);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .opt:hover .opt-icon {
+      background: var(--gold-dim);
+      border-color: var(--gold-bd);
+      color: var(--gold);
+    }
+
+    /* ── RESULTADO ── */
+    .result { display: none; width: 100%; max-width: 560px; }
+
+    .result-ico {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-bd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+    }
+    .result-ico svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--gold);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .result-title {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .result-title span { color: var(--gold); }
+
+    .result-desc {
+      color: var(--mid);
+      font-size: 0.97rem;
+      line-height: 1.75;
+      max-width: 420px;
+      margin: 0 auto 32px;
+    }
+
+    .result-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-bd);
+      border-radius: 99px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold);
+      color: #0b0b0b;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 36px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    .btn-cta:hover  { background: #f0a800; transform: translateY(-2px); }
+    .btn-cta:active { transform: translateY(0); }
+
+    /* ── ANIMAÇÃO ── */
+    .card, .result { animation: fadeUp 0.3s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">Resolva hoje seu preço e veja dinheiro sobrar no final do mês.</div>
+
+  <a href="/" class="logo">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8A000" stroke-width="1.5"/>
+      <path d="M16 8L11 17H15L13 24L21 14H17L19 8H16Z" fill="#E8A000"/>
+    </svg>
+    <span class="logo-name">VENTTURE</span>
+  </a>
+
+  <!-- Quiz header -->
+  <div class="quiz-header" id="quizHeader">
+    <div class="quiz-label">DIAGNÓSTICO DE PRECIFICAÇÃO</div>
+    <div class="quiz-subtitle" id="quizSubtitle">
+      vamos descobrir a verdade sobre seu preço
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">Pergunta 1 de 5</div>
+  </div>
+
+  <!-- Card de perguntas -->
+  <div class="card" id="quizCard">
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsContainer"></div>
+  </div>
+
+  <!-- Resultado -->
+  <div class="result" id="resultPanel">
+    <div class="result-ico">
+      <svg viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="result-score" id="resultScore"></div>
+    <h2 class="result-title" id="resultTitle"></h2>
+    <p class="result-desc" id="resultDesc"></p>
+    <a href="#" class="btn-cta" id="resultCta">
+      Quero acessar o sistema gratuito →
+    </a>
+  </div>
+
+  <script>
+    // ── PERGUNTAS ─────────────────────────────────────────────────────────────
+    const QUESTIONS = [
+      {
+        id: 'q1',
+        text: 'Você sabe como precificar seu produto/serviço?',
+        options: [
+          { label: 'SIM', value: 'sim' },
+          { label: 'NÃO', value: 'nao' },
+        ],
+      },
+      {
+        id: 'q2',
+        text: 'Você sabe dizer se o seu preço realmente dá lucro?',
+        options: [
+          { label: 'SIM', value: 'sim' },
+          { label: 'NÃO', value: 'nao' },
+        ],
+      },
+      {
+        id: 'q3',
+        text: 'Seu contador te ajuda na formação do seu preço?',
+        options: [
+          { label: 'SIM', value: 'sim' },
+          { label: 'NÃO', value: 'nao' },
+        ],
+      },
+      {
+        id: 'q4',
+        text: 'Deseja acesso a um sistema gratuito que calcula seu preço com lucro em 1 minuto?',
+        options: [
+          { label: 'SIM', value: 'sim' },
+          { label: 'NÃO', value: 'nao' },
+        ],
+      },
+      {
+        id: 'q5',
+        text: '← COLOQUE AQUI A 5ª PERGUNTA →',
+        options: [
+          { label: 'SIM', value: 'sim' },
+          { label: 'NÃO', value: 'nao' },
+        ],
+      },
+    ];
+
+    // ── RESULTADOS por pontuação (quantos "NÃO" nas q1-q3) ──────────────────
+    // Lógica: mais NÃO = mais dor = mais urgência = melhor lead
+    // Adapte os textos conforme sua estratégia
+    const RESULTS = {
+      high: {  // 2-3 "NÃO" nas q1-q3 → muita dor, precisa urgente
+        scoreLabel: '🔴 Diagnóstico: CRÍTICO',
+        title: 'Você está <span>perdendo dinheiro</span> agora',
+        desc: 'Identificamos que você ainda não tem clareza sobre a sua precificação — isso significa que provavelmente está cobrando menos do que deveria. O simulador gratuito vai te mostrar em 1 minuto exatamente quanto cobrar para ter lucro real.',
+        ctaText: 'Calcular meu preço correto agora →',
+        ctaUrl: '/simulador',
+      },
+      mid: {   // 1 "NÃO" nas q1-q3 → dor moderada
+        scoreLabel: '🟡 Diagnóstico: ATENÇÃO',
+        title: 'Você está <span>quase lá</span>',
+        desc: 'Você tem algum entendimento de precificação, mas ainda há uma lacuna que pode estar custando caro. O simulador gratuito vai preencher esse gap e garantir que você não deixe dinheiro na mesa.',
+        ctaText: 'Validar minha precificação agora →',
+        ctaUrl: '/simulador',
+      },
+      low: {   // 0 "NÃO" nas q1-q3 → já tem controle
+        scoreLabel: '🟢 Diagnóstico: BOM',
+        title: 'Você já tem <span>controle</span>',
+        desc: 'Parabéns — você já tem clareza sobre sua precificação. O simulador gratuito pode te ajudar a otimizar ainda mais e confirmar que seus números estão corretos.',
+        ctaText: 'Confirmar meus números →',
+        ctaUrl: '/simulador',
+      },
+    };
+
+    // ── STATE ─────────────────────────────────────────────────────────────────
+    var _current  = 0;
+    var _answers  = {};
+    var _userName = '';
+
+    // Lê nome do localStorage (preenchido na landing page)
+    try {
+      var u = JSON.parse(localStorage.getItem('vt_user') || '{}');
+      _userName = (u.fn || '').split(' ')[0]; // primeiro nome
+    } catch(e) {}
+
+    // Atualiza subtítulo com nome
+    if (_userName) {
+      document.getElementById('quizSubtitle').innerHTML =
+        '<strong>' + _userName.toLowerCase() + '</strong>, vamos descobrir a verdade sobre seu preço';
+    }
+
+    // ── RENDER ────────────────────────────────────────────────────────────────
+    function render() {
+      var q   = QUESTIONS[_current];
+      var pct = Math.round(((_current + 1) / QUESTIONS.length) * 100);
+
+      document.getElementById('progressFill').style.width  = pct + '%';
+      document.getElementById('progressLabel').textContent =
+        'Pergunta ' + (_current + 1) + ' de ' + QUESTIONS.length;
+
+      document.getElementById('questionText').textContent = q.text;
+
+      var container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+      q.options.forEach(function(opt) {
+        var btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML =
+          '<span class="opt-icon">' + opt.label.charAt(0) + '</span>' +
+          opt.label;
+        btn.addEventListener('click', function() { answer(q.id, opt.value); });
+        container.appendChild(btn);
+      });
+
+      // re-trigger animation
+      var card = document.getElementById('quizCard');
+      card.style.animation = 'none';
+      card.offsetHeight; // reflow
+      card.style.animation = '';
+    }
+
+    function answer(qId, value) {
+      _answers[qId] = value;
+
+      if (_current < QUESTIONS.length - 1) {
+        _current++;
+        render();
+      } else {
+        showResult();
+      }
+    }
+
+    // ── RESULTADO ─────────────────────────────────────────────────────────────
+    function showResult() {
+      // Conta NÃO nas primeiras 3 perguntas (q1, q2, q3)
+      var painScore = ['q1','q2','q3'].filter(function(id) {
+        return _answers[id] === 'nao';
+      }).length;
+
+      var key = painScore >= 2 ? 'high' : painScore === 1 ? 'mid' : 'low';
+      var r   = RESULTS[key];
+
+      document.getElementById('resultScore').textContent  = r.scoreLabel;
+      document.getElementById('resultTitle').innerHTML    = r.title;
+      document.getElementById('resultDesc').textContent   = r.desc;
+      document.getElementById('resultCta').textContent    = r.ctaText;
+      document.getElementById('resultCta').href           = r.ctaUrl;
+
+      document.getElementById('quizHeader').classList.add('hidden');
+      document.getElementById('quizCard').classList.add('hidden');
+
+      var panel = document.getElementById('resultPanel');
+      panel.style.display = 'block';
+      panel.style.animation = 'none';
+      panel.offsetHeight;
+      panel.style.animation = '';
+    }
+
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    render();
+  </script>
+</body>
+</html>
