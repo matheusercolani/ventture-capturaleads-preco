@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Simulador de Precificação – Ventture</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" /></noscript>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0b0b0b;
+      --surface:  #111;
+      --surface2: #181818;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.11);
+      --gold:     #E8A000;
+      --gold-dim: rgba(232,160,0,0.08);
+      --gold-bd:  rgba(232,160,0,0.25);
+      --white:    #f0f0f0;
+      --mid:      #888;
+      --dim:      #555;
+      --green:    #22c55e;
+      --green-dim:rgba(34,197,94,0.1);
+      --red:      #ef4444;
+      --red-dim:  rgba(239,68,68,0.08);
+      --blue:     #3b82f6;
+      --blue-dim: rgba(59,130,246,0.12);
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100svh;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--gold);
+      color: #0b0b0b;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-align: center;
+      padding: 10px 16px;
+      z-index: 100;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+    .logo svg { width: 24px; height: 24px; }
+    .logo-name {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+
+    .header-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--mid);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .header-right { width: 120px; } /* balance */
+
+    /* ── LAYOUT ── */
+    .page {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 0;
+      min-height: calc(100svh - 84px);
+    }
+
+    /* ── LEFT PANEL ── */
+    .panel-left {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-title svg { width: 14px; height: 14px; stroke: var(--mid); fill: none; stroke-width: 2; }
+
+    /* Express toggle */
+    .express-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .express-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .express-label svg { width: 13px; height: 13px; stroke: var(--gold); fill: none; stroke-width: 2; }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .toggle input { display: none; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #2a2a2a;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: var(--gold); }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: left 0.2s;
+    }
+    .toggle input:checked ~ .toggle-thumb { left: 19px; }
+
+    /* Field groups */
+    .field-group { margin-bottom: 14px; }
+
+    .field-label {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--mid);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .field-label .badge {
+      font-size: 0.62rem;
+      padding: 1px 6px;
+      border-radius: 99px;
+      background: rgba(232,160,0,0.12);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .field-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field-input:focus { border-color: rgba(232,160,0,0.5); }
+    .field-input::placeholder { color: var(--dim); }
+    /* Remove arrows */
+    .field-input::-webkit-outer-spin-button,
+    .field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field-input[type=number] { -moz-appearance: textfield; }
+
+    /* Inline calculated */
+    .calc-row {
+      background: rgba(232,160,0,0.05);
+      border: 1px solid var(--gold-bd);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .calc-row-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .calc-row-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .calc-row-value span { color: var(--mid); font-weight: 400; font-size: 0.82rem; margin-left: 4px; }
+
+    .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+    .btn-calc {
+      width: 100%;
+      background: var(--gold);
+      color: #0b0b0b;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn-calc:hover  { background: #f0a800; }
+    .btn-calc:active { transform: scale(0.98); }
+    .btn-calc svg { width: 15px; height: 15px; fill: none; stroke: #0b0b0b; stroke-width: 2.5; stroke-linecap: round; }
+
+    /* ── RIGHT PANEL ── */
+    .panel-right {
+      padding: 28px 32px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      color: var(--dim);
+    }
+    .empty-state svg { width: 48px; height: 48px; stroke: var(--dim); fill: none; stroke-width: 1.5; margin-bottom: 16px; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* Result cards */
+    .results { display: none; flex-direction: column; gap: 16px; }
+    .results.visible { display: flex; }
+
+    /* Margem de Segurança — hero */
+    .card-hero {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .hero-left {}
+    .hero-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .hero-value {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .hero-value.green { color: var(--green); }
+    .hero-value.yellow { color: var(--gold); }
+    .hero-value.red { color: var(--red); }
+    .hero-sub {
+      font-size: 0.8rem;
+      color: var(--mid);
+    }
+    .hero-sub strong { font-weight: 700; }
+    .hero-sub .green { color: var(--green); }
+    .hero-sub .red   { color: var(--red); }
+
+    .hero-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hero-badge.green { background: var(--green-dim); }
+    .hero-badge.yellow { background: var(--gold-dim); }
+    .hero-badge.red { background: var(--red-dim); }
+    .hero-badge svg { width: 18px; height: 18px; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .hero-badge.green svg { stroke: var(--green); }
+    .hero-badge.yellow svg { stroke: var(--gold); }
+    .hero-badge.red svg { stroke: var(--red); }
+
+    /* Cards row */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Desconto card */
+    .desconto-text {
+      font-size: 0.8rem;
+      color: var(--mid);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .desconto-highlight {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .desconto-pct {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+    .desconto-or {
+      font-size: 0.8rem;
+      color: var(--dim);
+    }
+    .desconto-rs {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .desconto-note {
+      font-size: 0.72rem;
+      color: var(--dim);
+      margin-top: 6px;
+    }
+
+    /* Ponto de Equilíbrio card */
+    .eq-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .eq-sub {
+      font-size: 0.75rem;
+      color: var(--dim);
+      line-height: 1.5;
+    }
+    .eq-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .eq-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--gold);
+      transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    }
+    .eq-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.67rem;
+      color: var(--dim);
+      margin-top: 5px;
+    }
+
+    /* Composição */
+    .card-comp { border-left: 3px solid var(--gold-bd); }
+    .comp-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem;
+    }
+    .comp-row:last-child { border-bottom: none; }
+    .comp-row.lucro {
+      margin-top: 4px;
+      padding: 12px 14px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 8px;
+    }
+    .comp-name { color: var(--mid); }
+    .comp-name.white { color: var(--white); }
+    .comp-name.lucro-label {
+      color: var(--white);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .comp-val { font-weight: 600; }
+    .comp-val.red   { color: var(--red); }
+    .comp-val.white { color: var(--white); }
+    .comp-val.blue  { color: var(--blue); font-weight: 800; font-size: 1rem; }
+    .comp-val.green { color: var(--green); font-weight: 800; font-size: 1rem; }
+
+    /* Projeção anual */
+    .card-proj {
+      border-radius: 12px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card-proj.lucro-proj {
+      background: linear-gradient(135deg, rgba(34,197,94,0.06) 0%, rgba(34,197,94,0.02) 100%);
+      border: 1px solid rgba(34,197,94,0.22);
+    }
+    .card-proj.perda-proj {
+      background: linear-gradient(135deg, rgba(239,68,68,0.07) 0%, rgba(239,68,68,0.02) 100%);
+      border: 1px solid rgba(239,68,68,0.22);
+    }
+    .proj-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .proj-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .lucro-proj .proj-icon { background: rgba(34,197,94,0.12); }
+    .perda-proj .proj-icon { background: rgba(239,68,68,0.12); }
+    .proj-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .lucro-proj .proj-title { color: var(--green); }
+    .perda-proj .proj-title { color: var(--red); }
+    .proj-desc {
+      font-size: 0.78rem;
+      color: var(--mid);
+      margin-top: 2px;
+    }
+    .proj-col {}
+    .proj-col-label {
+      font-size: 0.7rem;
+      color: var(--dim);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .proj-col-value {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .lucro-proj .proj-col-value { color: var(--green); }
+    .perda-proj .proj-col-value { color: var(--red); }
+    .proj-col-sub {
+      font-size: 0.72rem;
+      color: var(--dim);
+      margin-top: 3px;
+    }
+    .comp-pct {
+      font-size: 0.7rem;
+      color: var(--dim);
+      margin-left: 4px;
+    }
+
+    /* Animação entrada */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .results.visible { animation: fadeUp 0.35s ease both; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 800px) {
+      .page { grid-template-columns: 1fr; }
+      .panel-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .panel-right { padding: 20px 16px; }
+      .site-header { padding: 14px 16px; }
+      .header-right { display: none; }
+      .cards-row { grid-template-columns: 1fr; }
+      .hero-value { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">Resolva hoje seu preço e veja dinheiro sobrar no final do mês.</div>
+
+  <header class="site-header">
+    <a href="/" class="logo">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8A000" stroke-width="1.5"/>
+        <path d="M16 8L11 17H15L13 24L21 14H17L19 8H16Z" fill="#E8A000"/>
+      </svg>
+      <span class="logo-name">VENTTURE</span>
+    </a>
+    <span class="header-title">Simulador de Precificação</span>
+    <div class="header-right"></div>
+  </header>
+
+  <div class="page">
+
+    <!-- ── PAINEL ESQUERDO ── -->
+    <aside class="panel-left">
+      <div class="panel-title">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Parâmetros
+      </div>
+
+      <div class="express-row">
+        <span class="express-label">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Preço Express
+        </span>
+        <label class="toggle">
+          <input type="checkbox" id="expressToggle" onchange="toggleExpress()" />
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">$ Preço sugerido (R$)</div>
+        <input class="field-input" type="number" id="fPreco" value="100" min="0" step="0.01" oninput="recalcInline()" />
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">% Desconto (%)</div>
+        <input class="field-input" type="number" id="fDesconto" value="0" min="0" max="99" step="0.1" oninput="recalcInline()" />
+      </div>
+
+      <!-- Campos completos (ocultos no Express) -->
+      <div id="fieldsCompletos">
+        <div class="field-group">
+          <div class="field-label">Impostos sobre venda (%)</div>
+          <input class="field-input" type="number" id="fImpostos" value="10" min="0" max="100" step="0.1" oninput="recalcInline()" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Custo (%)</div>
+          <input class="field-input" type="number" id="fCusto" value="50" min="0" max="100" step="0.1" oninput="recalcInline()" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Outros variáveis (%)</div>
+          <input class="field-input" type="number" id="fOutros" value="5" min="0" max="100" step="0.1" oninput="recalcInline()" />
+        </div>
+      </div>
+
+      <!-- MC calculado -->
+      <div class="calc-row" id="calcMC">
+        <span class="calc-row-label">MC — Calculado</span>
+        <span class="calc-row-value" id="mcDisplay">—</span>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">
+          Fixos (%)
+          <span class="badge">do preço</span>
+        </div>
+        <input class="field-input" type="number" id="fFixos" value="15" min="0" max="100" step="0.1" oninput="recalcInline()" />
+      </div>
+
+      <!-- Resultado Operacional calculado -->
+      <div class="calc-row" id="calcRes">
+        <span class="calc-row-label">Resultado Operacional — Calculado</span>
+        <span class="calc-row-value" id="resDisplay">—</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field-group">
+        <div class="field-label">
+          Vendas por mês
+          <span class="badge">projeção</span>
+        </div>
+        <input class="field-input" type="number" id="fVendas" value="10" min="1" step="1" oninput="recalcInline()" />
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="btn-calc" onclick="calcular()">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Calcular
+      </button>
+    </aside>
+
+    <!-- ── PAINEL DIREITO ── -->
+    <main class="panel-right">
+
+      <div class="empty-state" id="emptyState">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <p>Preencha os parâmetros ao lado<br>e clique em <strong>Calcular</strong></p>
+      </div>
+
+      <div class="results" id="resultsPanel">
+
+        <!-- Margem de Segurança -->
+        <div class="card-hero">
+          <div class="hero-left">
+            <div class="hero-label">Margem de Segurança</div>
+            <div class="hero-value" id="rMargemSeg">—</div>
+            <div class="hero-sub" id="rHeroSub">—</div>
+          </div>
+          <div class="hero-badge" id="rHeroBadge">
+            <svg viewBox="0 0 24 24" id="rHeroIcon"></svg>
+          </div>
+        </div>
+
+        <!-- Desconto + Ponto de Equilíbrio -->
+        <div class="cards-row">
+
+          <div class="card">
+            <div class="card-label">Impacto do Desconto</div>
+            <div class="desconto-text" id="rDescontoText">—</div>
+            <div class="desconto-highlight">
+              <span class="desconto-pct" id="rDescontoPct">—</span>
+              <span class="desconto-or" id="rDescontoOr"></span>
+              <span class="desconto-rs" id="rDescontoRs"></span>
+            </div>
+            <div class="desconto-note" id="rDescontoNote"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Ponto de Equilíbrio</div>
+            <div class="eq-value" id="rPontoEq">—</div>
+            <div class="eq-sub" id="rEqSub">Faturamento mínimo para cobrir todos os custos</div>
+            <div class="eq-bar">
+              <div class="eq-bar-fill" id="rEqFill" style="width:0%"></div>
+            </div>
+            <div class="eq-bar-label">
+              <span>R$ 0</span>
+              <span id="rEqBarMax">—</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Composição -->
+        <div class="card card-comp">
+          <div class="card-label">Composição</div>
+
+          <div class="comp-row">
+            <span class="comp-name">Preço de venda</span>
+            <span class="comp-val white" id="cPreco">—</span>
+          </div>
+          <div class="comp-row" id="cDescRow">
+            <span class="comp-name" id="cDescLabel">Preço após desconto</span>
+            <span class="comp-val white" id="cPrecoDesc">—</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-name">Custos variáveis</span>
+            <span class="comp-val red" id="cCustosVar">—</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-name" id="cMcLabel">MC</span>
+            <span class="comp-val white" id="cMc">—</span>
+          </div>
+          <div class="comp-row">
+            <span class="comp-name">Custos fixos</span>
+            <span class="comp-val red" id="cFixos">—</span>
+          </div>
+          <div class="comp-row lucro">
+            <span class="comp-name lucro-label">🔥 Lucro</span>
+            <span class="comp-val" id="cLucro">—</span>
+          </div>
+          <div class="comp-row" style="border-bottom:none;padding-bottom:0">
+            <span class="comp-name">Ponto de equilíbrio</span>
+            <span class="comp-val white" id="cPontoEq">—</span>
+          </div>
+        </div>
+
+        <!-- Projeção 12 meses -->
+        <div class="card-proj" id="cardProj">
+          <div class="proj-header">
+            <div class="proj-icon" id="projIcon">📈</div>
+            <div>
+              <div class="proj-title" id="projTitle">Projeção 12 meses</div>
+              <div class="proj-desc" id="projDesc">—</div>
+            </div>
+          </div>
+          <div class="proj-col">
+            <div class="proj-col-label">Por mês</div>
+            <div class="proj-col-value" id="projMes">—</div>
+            <div class="proj-col-sub" id="projMesSub">—</div>
+          </div>
+          <div class="proj-col">
+            <div class="proj-col-label">Por ano (12 meses)</div>
+            <div class="proj-col-value" id="projAno">—</div>
+            <div class="proj-col-sub" id="projAnoSub">—</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ── ESTADO ───────────────────────────────────────────────────────────────
+    var _express = false;
+
+    function toggleExpress() {
+      _express = document.getElementById('expressToggle').checked;
+      document.getElementById('fieldsCompletos').style.display = _express ? 'none' : 'block';
+      if (_express) {
+        document.getElementById('fImpostos').value = 0;
+        document.getElementById('fOutros').value   = 0;
+      }
+      recalcInline();
+    }
+
+    // ── CÁLCULO INLINE (MC e Resultado Operacional enquanto digita) ───────────
+    function recalcInline() {
+      var v = getValues();
+      if (!v) { clearInline(); return; }
+
+      var mcPct  = 100 - v.custosVarPct;
+      var mcR    = mcPct / 100 * v.precoDesc;
+      var fixosR = v.fixos / 100 * v.precoDesc;
+      var resR   = mcR - fixosR;
+      var resPct = v.precoDesc > 0 ? (resR / v.precoDesc * 100) : 0;
+
+      document.getElementById('mcDisplay').innerHTML =
+        fmt(mcPct, 1) + '%<span>(' + fmtBRL(mcR) + ')</span>';
+      document.getElementById('resDisplay').innerHTML =
+        '<span style="color:' + (resPct >= 0 ? '#22c55e' : '#ef4444') + '">' +
+        fmt(resPct, 1) + '%</span><span>(' + fmtBRL(resR) + ')</span>';
+    }
+
+    function clearInline() {
+      document.getElementById('mcDisplay').innerHTML  = '—';
+      document.getElementById('resDisplay').innerHTML = '—';
+    }
+
+    // ── CALCULAR ──────────────────────────────────────────────────────────────
+    function calcular() {
+      var v = getValues();
+      if (!v) return;
+
+      var precoDesc    = v.precoDesc;
+      var custosVarPct = v.custosVarPct;
+      var custosVarR   = custosVarPct / 100 * precoDesc;
+      var mcPct        = 100 - custosVarPct;
+      var mcR          = mcPct / 100 * precoDesc;
+      var fixosR       = v.fixos / 100 * precoDesc;
+      var lucroR       = mcR - fixosR;
+      var lucroResPct  = precoDesc > 0 ? (lucroR / precoDesc * 100) : 0;
+      var margemSegPct = mcR > 0 ? (lucroR / mcR * 100) : 0;
+      var pontoEq      = mcPct > 0 ? (fixosR / (mcPct / 100)) : 0;
+
+      // Impacto do desconto
+      var descPct     = v.desconto;
+      var compPct     = descPct > 0 ? (descPct / (1 - descPct / 100)) : 0;
+      var compR       = v.preco * compPct / 100;
+
+      // ── MARGEM DE SEGURANÇA ──
+      var ms = margemSegPct;
+      var msColor = ms >= 40 ? 'green' : ms >= 15 ? 'yellow' : 'red';
+
+      el('rMargemSeg').textContent = fmt(ms, 1) + '%';
+      el('rMargemSeg').className   = 'hero-value ' + msColor;
+
+      var heroSub = 'Resultado operacional: <strong class="' + (lucroResPct >= 0 ? 'green' : 'red') + '">' +
+        fmt(lucroResPct, 1) + '% (' + fmtBRL(lucroR) + ')</strong>';
+      el('rHeroSub').innerHTML = heroSub;
+
+      var badge = el('rHeroBadge');
+      badge.className = 'hero-badge ' + msColor;
+      el('rHeroIcon').innerHTML = ms >= 15
+        ? '<polyline points="20 6 9 17 4 12"/>'
+        : '<path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/>';
+
+      // ── IMPACTO DO DESCONTO ──
+      if (descPct > 0) {
+        el('rDescontoText').textContent =
+          'Para manter o mesmo lucro com ' + fmt(descPct, 1) + '% de desconto:';
+        el('rDescontoPct').textContent = '+' + fmt(compPct, 1) + '%';
+        el('rDescontoOr').textContent  = 'ou';
+        el('rDescontoRs').textContent  = fmtBRL(compR) + ' a mais';
+        el('rDescontoNote').textContent = 'no preço base antes do desconto';
+      } else {
+        el('rDescontoText').textContent  = 'Nenhum desconto aplicado.';
+        el('rDescontoPct').textContent   = '—';
+        el('rDescontoOr').textContent    = '';
+        el('rDescontoRs').textContent    = '';
+        el('rDescontoNote').textContent  = 'Adicione um % de desconto para ver o impacto.';
+      }
+
+      // ── PONTO DE EQUILÍBRIO ──
+      el('rPontoEq').textContent = fmtBRL(pontoEq);
+      var eqPct = v.preco > 0 ? Math.min((pontoEq / v.preco) * 100, 100) : 0;
+      el('rEqFill').style.width = eqPct + '%';
+      el('rEqBarMax').textContent = fmtBRL(v.preco);
+
+      // ── COMPOSIÇÃO ──
+      el('cPreco').textContent = fmtBRL(v.preco);
+
+      if (descPct > 0) {
+        el('cDescRow').style.display = '';
+        el('cDescLabel').textContent = 'Preço após desconto (-' + fmt(descPct, 0) + '%)';
+        el('cPrecoDesc').textContent  = fmtBRL(precoDesc);
+      } else {
+        el('cDescRow').style.display = 'none';
+      }
+
+      el('cCustosVar').textContent = fmtBRL(custosVarR);
+      el('cMcLabel').textContent   = 'MC (' + fmt(mcPct, 1) + '%)';
+      el('cMc').textContent        = fmtBRL(mcR);
+      el('cFixos').textContent     = fmtBRL(fixosR);
+
+      var lucroEl = el('cLucro');
+      lucroEl.textContent  = fmtBRL(lucroR);
+      lucroEl.className    = 'comp-val ' + (lucroR >= 0 ? 'blue' : 'red');
+
+      el('cPontoEq').textContent = fmtBRL(pontoEq);
+
+      // ── PROJEÇÃO 12 MESES ──
+      var vendas   = Math.max(1, parseFloat(document.getElementById('fVendas').value) || 10);
+      var lucroMes = lucroR * vendas;
+      var lucroAno = lucroMes * 12;
+      var proj     = el('cardProj');
+      var isLucro  = lucroR >= 0;
+
+      proj.className = 'card-proj ' + (isLucro ? 'lucro-proj' : 'perda-proj');
+      el('projIcon').textContent  = isLucro ? '📈' : '📉';
+      el('projTitle').textContent = isLucro ? 'Projeção de lucro — 12 meses' : 'Atenção — você está no prejuízo';
+      el('projDesc').textContent  = isLucro
+        ? 'Com ' + vendas + ' venda' + (vendas > 1 ? 's' : '') + '/mês ao preço atual'
+        : 'Com ' + vendas + ' venda' + (vendas > 1 ? 's' : '') + '/mês você está perdendo dinheiro';
+
+      el('projMes').textContent    = fmtBRL(Math.abs(lucroMes));
+      el('projMesSub').textContent = isLucro ? 'lucro mensal' : 'perda por mês';
+      el('projAno').textContent    = fmtBRL(Math.abs(lucroAno));
+      el('projAnoSub').textContent = isLucro ? 'lucro em 1 ano' : 'perdido em 1 ano';
+
+      // Show results
+      el('emptyState').style.display  = 'none';
+      var r = el('resultsPanel');
+      r.classList.add('visible');
+      r.style.animation = 'none';
+      r.offsetHeight;
+      r.style.animation = '';
+    }
+
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+    function getValues() {
+      var preco    = parseFloat(document.getElementById('fPreco').value)    || 0;
+      var desconto = parseFloat(document.getElementById('fDesconto').value) || 0;
+      var impostos = parseFloat(document.getElementById('fImpostos').value) || 0;
+      var custo    = parseFloat(document.getElementById('fCusto').value)    || 0;
+      var outros   = parseFloat(document.getElementById('fOutros').value)   || 0;
+      var fixos    = parseFloat(document.getElementById('fFixos').value)    || 0;
+
+      var vendas = Math.max(1, parseFloat(document.getElementById('fVendas').value) || 10);
+
+      if (preco <= 0) return null;
+      desconto = Math.min(desconto, 99);
+
+      var precoDesc    = preco * (1 - desconto / 100);
+      var custosVarPct = impostos + custo + outros;
+
+      return { preco, desconto, impostos, custo, outros, fixos, precoDesc, custosVarPct };
+    }
+
+    function el(id) { return document.getElementById(id); }
+
+    function fmt(n, decimals) {
+      return isFinite(n) ? n.toFixed(decimals) : '0.0';
+    }
+
+    function fmtBRL(n) {
+      if (!isFinite(n)) return 'R$ 0,00';
+      return 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+    recalcInline();
+  </script>
+</body>
+</html>
