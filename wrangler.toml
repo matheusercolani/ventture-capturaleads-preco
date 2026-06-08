@@ -10,6 +10,7 @@ database_id   = "388bd128-75ec-4680-ba03-da5326d2082a"
 [vars]
 META_PIXEL_ID      = "1290709392346372"
 GA4_MEASUREMENT_ID = "G-KK9GFR6KW4"
+AC_API_URL         = "https://tipo.api-us1.com"
 
 # Secrets — set via Cloudflare Pages dashboard (Settings > Environment Variables)
 # or via: npx wrangler pages secret put META_CAPI_TOKEN
