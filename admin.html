@@ -1957,20 +1957,32 @@
     function exportCSV() {
       var leads = getLeads();
       if (!leads.length) { alert('Nenhum lead para exportar.'); return; }
-      var rows = [['#','Nome','WhatsApp','E-mail','Faturamento','Etapa CRM','Últ. Contato','Próx. Contato','Comentários','Data/Hora']];
-      leads.forEach(function(l, i) {
-        rows.push([i+1, l.nome, l.whatsapp, l.email, l.faturamento,
-          l.etapa||'', l.ultContato||'', l.proxContato||'',
-          (l.comentarios||'').replace(/\n/g,' '), fmtDate(l.timestamp)]);
+
+      // Cabeçalhos compatíveis com ActiveCampaign (auto-mapeamento no import)
+      var rows = [['First Name','Last Name','Email','Phone','Tags','Faturamento','Etapa CRM','Data/Hora']];
+
+      leads.forEach(function(l) {
+        var partes    = (l.nome || '').trim().split(/\s+/);
+        var firstName = partes[0] || '';
+        var lastName  = partes.slice(1).join(' ');
+        var phone     = (l.whatsapp || '').replace(/\D/g, '');
+        if (phone && phone.length <= 11) phone = '55' + phone;
+        if (phone) phone = '+' + phone;
+        var tags = ['ventture-leads', l.faturamento ? 'Faturamento: ' + l.faturamento : ''].filter(Boolean).join(';');
+        rows.push([firstName, lastName, l.email || '', phone, tags,
+          l.faturamento || '', l.etapa || '', fmtDate(l.timestamp)]);
       });
+
       var csv = rows.map(function(r) {
-        return r.map(function(c) { return '"'+String(c).replace(/"/g,'""')+'"'; }).join(',');
+        return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
       }).join('\r\n');
-      var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = 'leads-ventture-'+new Date().toISOString().slice(0,10)+'.csv';
-      a.click(); URL.revokeObjectURL(url);
+      var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href   = url;
+      a.download = 'leads-ventture-ac-' + new Date().toISOString().slice(0, 10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     /* ── CRM ─────────────────────────────────────────── */
