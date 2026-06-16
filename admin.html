@@ -1346,6 +1346,11 @@
         <option value="Até R$200 mil">Até R$200 mil</option>
         <option value="Mais de R$200 mil">Mais de R$200 mil</option>
       </select>
+      <select id="filterOrigem" onchange="renderTable()">
+        <option value="">Todas as origens</option>
+        <option value="__landing__">Landing principal</option>
+        <option value="Diagnóstico Precificação">Diagnóstico Precificação</option>
+      </select>
     </div>
 
     <!-- table -->
@@ -1358,6 +1363,7 @@
             <th>WhatsApp</th>
             <th>E-mail</th>
             <th>Faturamento</th>
+            <th>Origem</th>
             <th>Etapa CRM</th>
             <th>Data / Hora</th>
             <th class="td-actions"></th>
@@ -1627,6 +1633,7 @@
         whatsapp:    l.whatsapp    || '',
         email:       l.email       || '—',
         faturamento: l.faturamento || '',
+        origem:      l.origem      || '',
         etapa:       (l.etapa && l.etapa !== 'Sem contato') ? l.etapa : 'Contato inicial',
         ultContato:  l.ult_contato  || '',
         proxContato: l.prox_contato || '',
@@ -1892,6 +1899,7 @@
       var leads  = getLeads();
       var search = document.getElementById('searchInput').value.toLowerCase();
       var filter = document.getElementById('filterFat').value;
+      var filterOrig = document.getElementById('filterOrigem').value;
 
       var filtered = leads.filter(function(l, i) {
         l._idx = i + 1;
@@ -1901,7 +1909,9 @@
           (l.email && l.email.toLowerCase().includes(search));
         var matchFat = !filter ||
           (filter === '__sem__' ? !l.faturamento : l.faturamento === filter);
-        return matchSearch && matchFat;
+        var matchOrig = !filterOrig ||
+          (filterOrig === '__landing__' ? !l.origem : l.origem === filterOrig);
+        return matchSearch && matchFat && matchOrig;
       });
 
       var tbody = document.getElementById('leadsBody');
@@ -1925,6 +1935,7 @@
           '<td class="td-phone">' + esc(l.whatsapp) + '</td>' +
           '<td>' + esc(l.email) + '</td>' +
           '<td>' + (l.faturamento ? '<span class="badge-fat ' + FAT_CLASS[fi] + '">' + esc(l.faturamento) + '</span>' : '<span style="color:var(--dim)">—</span>') + '</td>' +
+          '<td>' + (l.origem ? '<span style="font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(232,160,0,0.12);color:var(--gold,#E8A000);white-space:nowrap">' + esc(l.origem) + '</span>' : '<span style="font-size:0.72rem;color:var(--dim)">Landing principal</span>') + '</td>' +
           '<td><span style="font-size:0.72rem;color:var(--dim)">' + esc(l.etapa || 'Sem contato') + '</span></td>' +
           '<td class="td-time">' + fmtDate(l.timestamp) + '</td>' +
           '<td class="td-actions"><button class="btn-row-del" onclick="deleteLead(' + l.id + ',event)" title="Excluir lead">' + trashSvg + '</button></td>' +
@@ -1959,7 +1970,7 @@
       if (!leads.length) { alert('Nenhum lead para exportar.'); return; }
 
       // Cabeçalhos compatíveis com ActiveCampaign (auto-mapeamento no import)
-      var rows = [['First Name','Last Name','Email','Phone','Tags','Faturamento','Etapa CRM','Data/Hora']];
+      var rows = [['First Name','Last Name','Email','Phone','Tags','Faturamento','Origem','Etapa CRM','Data/Hora']];
 
       leads.forEach(function(l) {
         var partes    = (l.nome || '').trim().split(/\s+/);
@@ -1968,9 +1979,9 @@
         var phone     = (l.whatsapp || '').replace(/\D/g, '');
         if (phone && phone.length <= 11) phone = '55' + phone;
         if (phone) phone = '+' + phone;
-        var tags = ['ventture-leads', l.faturamento ? 'Faturamento: ' + l.faturamento : ''].filter(Boolean).join(';');
+        var tags = ['ventture-leads', l.origem || '', l.faturamento ? 'Faturamento: ' + l.faturamento : ''].filter(Boolean).join(';');
         rows.push([firstName, lastName, l.email || '', phone, tags,
-          l.faturamento || '', l.etapa || '', fmtDate(l.timestamp)]);
+          l.faturamento || '', l.origem || 'Landing principal', l.etapa || '', fmtDate(l.timestamp)]);
       });
 
       var csv = rows.map(function(r) {
