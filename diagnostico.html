@@ -942,6 +942,32 @@
         tier: tier, margem_pct: margemPct, pain_score: pain, faturamento: calcState.faturamento, currency: 'BRL',
       });
 
+      // Salva as respostas do diagnóstico no lead (quiz + calculadora + resultado)
+      var respostas = {
+        quiz: QUIZ.map(function(q) {
+          return { pergunta: q.text, resposta: quizAnswers[q.id] === 'sim' ? 'Sim' : 'Não' };
+        }),
+        calculadora: {
+          faturamento:     calcState.faturamento,
+          custosFixos:     calcState.custosFixos,
+          custosVariaveis: calcState.custosVar,
+          custoProduto:    calcState.custoProduto,
+          descontoMedio:   calcState.descontoMedio,
+        },
+        resultado: { tier: tier, margemPct: Math.round(margemPct) },
+      };
+      if (_submitPromise) {
+        _submitPromise.then(function() {
+          if (leadData.leadId) {
+            fetch('/api/submit/respostas', {
+              method: 'POST', keepalive: true,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: leadData.leadId, respostas: respostas }),
+            }).catch(function() {});
+          }
+        });
+      }
+
       reveal(el('resultSection'));
     });
 

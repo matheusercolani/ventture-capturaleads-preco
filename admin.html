@@ -1634,6 +1634,7 @@
         email:       l.email       || '—',
         faturamento: l.faturamento || '',
         origem:      l.origem      || '',
+        respostas:   l.respostas   || '',
         etapa:       (l.etapa && l.etapa !== 'Sem contato') ? l.etapa : 'Contato inicial',
         ultContato:  l.ult_contato  || '',
         proxContato: l.prox_contato || '',
@@ -2115,6 +2116,53 @@
       document.getElementById('kanban').innerHTML = html;
     }
 
+    function buildRespostasHTML(lead) {
+      if (!lead.respostas) return '';
+      var r;
+      try { r = JSON.parse(lead.respostas); } catch(e) { return ''; }
+      if (!r || typeof r !== 'object') return '';
+
+      function df(label, val) {
+        return '<div class="dfield"><label>' + esc(label) + '</label><span>' + val + '</span></div>';
+      }
+
+      var rows = '';
+
+      // Quiz
+      if (Array.isArray(r.quiz)) {
+        r.quiz.forEach(function(q) {
+          var sim = (q.resposta || '').toLowerCase().charAt(0) === 's';
+          rows += '<div class="dfield"><label>' + esc(q.pergunta) + '</label>' +
+            '<span style="color:' + (sim ? '#22c55e' : '#ef4444') + ';font-weight:600">' + esc(q.resposta || '—') + '</span></div>';
+        });
+      }
+
+      // Calculadora
+      var c = r.calculadora;
+      if (c) {
+        if (c.faturamento)             rows += df('Faturamento', esc(c.faturamento));
+        if (c.custosFixos != null)     rows += df('Custos fixos', c.custosFixos + '%');
+        if (c.custosVariaveis != null) rows += df('Custos variáveis', c.custosVariaveis + '%');
+        if (c.custoProduto != null)    rows += df('Custo do produto/serviço', c.custoProduto + '%');
+        if (c.descontoMedio != null)   rows += df('Desconto médio', c.descontoMedio + '%');
+      }
+
+      // Resultado
+      if (r.resultado) {
+        var t = r.resultado.tier;
+        var label = t === 'red' ? '🔴 Crítico' : t === 'gold' ? '🟡 Atenção' : t === 'green' ? '🟢 Saudável' : (t || '—');
+        if (r.resultado.margemPct != null) label += ' · margem ' + r.resultado.margemPct + '%';
+        rows += df('Resultado', label);
+      }
+
+      if (!rows) return '';
+
+      return '<div class="drawer-section-sep"></div>' +
+        '<div><label class="field-lbl">Respostas do diagnóstico</label>' +
+        '<p class="field-hint">O que a pessoa respondeu no quiz e na calculadora</p>' +
+        '<div class="drawer-info" style="margin-top:8px">' + rows + '</div></div>';
+    }
+
     function openDrawerByIdx(idx) {
       currentLeadIdx = idx;
       var leads  = getLeads();
@@ -2163,6 +2211,7 @@
             '<label class="field-lbl">Comentários</label>' +
             '<textarea id="dComent" class="d-textarea" placeholder="Notas sobre este lead…">'+esc(lead.comentarios||'')+'</textarea>' +
           '</div>' +
+          buildRespostasHTML(lead) +
         '</div>' +
         '<div class="drawer-footer">' +
           '<button class="drawer-save" onclick="saveDrawer()">Salvar alterações</button>' +
