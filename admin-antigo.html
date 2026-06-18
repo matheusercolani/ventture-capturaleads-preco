@@ -7,59 +7,43 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" />
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Google AI Studio — TEMA CLARO (padrão) ──────── */
     :root {
-      --bg:       #ffffff;
-      --surface:  #ffffff;
-      --raise:    #f0f4f9;   /* hover / superfície de apoio */
-      --surface2: #f8f9fa;
-      --border:   #e8eaed;
-      --border2:  #dadce0;
-      --gold:     #0b57d0;   /* azul de destaque (Google) */
-      --gold-dim: #e8f0fe;   /* fundo do destaque */
-      --gold-bd:  #aecbfa;   /* borda do destaque */
-      --red:      #d93025;
-      --green:    #1e8e3e;
-      --amber:    #ea8600;
-      --white:    #1f1f1f;   /* texto principal */
-      --mid:      #5f6368;   /* texto secundário */
-      --dim:      #80868b;   /* texto terciário */
-      --text:     #1f1f1f;
-      --red-bg:   #fce8e6;
-      --green-bg: #e6f4ea;
-      --amber-bg: #fef7e0;
-      --radius:   16px;
-      --radius-sm:8px;
+      --bg:      #0b0b0b;
+      --surface: #131313;
+      --raise:   #1a1a1a;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --gold:    #E8A000;
+      --gold-dim:rgba(232,160,0,0.10);
+      --gold-bd: rgba(232,160,0,0.22);
+      --red:     #D94040;
+      --green:   #3DAA6A;
+      --white:   #f0f0f0;
+      --mid:     #999;
+      --dim:     #555;
+      --radius:  10px;
     }
 
-    /* ── TEMA ESCURO ─────────────────────────────────── */
-    [data-theme="dark"] {
-      --bg:       #131314;
-      --surface:  #1e1f20;
-      --raise:    #2a2b2d;
-      --surface2: #1e1f20;
-      --border:   #2f3133;
-      --border2:  #3c4043;
-      --gold:     #8ab4f8;
-      --gold-dim: #1a3157;
-      --gold-bd:  #3c5a86;
-      --red:      #f28b82;
-      --green:    #81c995;
-      --amber:    #fdd663;
-      --white:    #e3e3e3;
-      --mid:      #9aa0a6;
-      --dim:      #80868b;
-      --text:     #e3e3e3;
-      --red-bg:   #3a2422;
-      --green-bg: #1f3a2a;
-      --amber-bg: #3a3320;
+    [data-theme="light"] {
+      --bg:      #f2f2f2;
+      --surface: #ffffff;
+      --raise:   #f7f7f7;
+      --border:  rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.14);
+      --gold:    #c87f00;
+      --gold-dim:rgba(200,127,0,0.09);
+      --gold-bd: rgba(200,127,0,0.25);
+      --red:     #c0392b;
+      --green:   #27ae60;
+      --white:   #111111;
+      --mid:     #555;
+      --dim:     #999;
     }
 
     /* botão tema */
@@ -85,30 +69,17 @@
 
     body {
       background: var(--bg);
-      color: var(--text);
-      font-family: 'Roboto Slab', Georgia, serif;
-      font-size: 14px;
+      color: var(--white);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
-      display: flex;
     }
 
-    h1, h2, h3 { font-family: 'Roboto Slab', Georgia, serif; font-weight: 600; }
-
-    input, select, textarea, button { font-family: 'Roboto Slab', Georgia, serif; }
-
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined' !important;
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      font-weight: normal; font-style: normal; line-height: 1;
-      letter-spacing: normal; text-transform: none; white-space: nowrap;
-      display: inline-block; vertical-align: middle;
-      -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased;
-      font-size: 20px;
+    h1, h2, h3 {
+      font-family: 'Big Shoulders Display', 'Inter', sans-serif;
     }
-    .ms-sm { font-size: 18px; }
-    .ms-xs { font-size: 16px; }
 
     /* ── TOPBAR ──────────────────────────────────────── */
     .topbar {
@@ -1200,210 +1171,119 @@
       tbody td:nth-child(3) { display: none; }
       .bar-row { grid-template-columns: 110px 1fr 30px; }
     }
-
-    /* ════════════ REDESENHO GOOGLE AI STUDIO ════════════ */
-    .page-title, .stat-card .value, .drawer-name, .logo-name,
-    .dash-card .dk-value, .confirm-box h3, .import-head h3 { font-family: 'Roboto Slab', Georgia, serif; }
-    .d-select, .d-input, .d-textarea, .drawer-save { font-family: 'Roboto Slab', Georgia, serif; }
-
-    /* ── SIDEBAR ─────────────────────────────────────── */
-    .sidebar {
-      position: sticky; top: 0; height: 100vh;
-      width: 260px; flex-shrink: 0;
-      background: var(--surface); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 6px; padding: 18px 12px;
-    }
-    .sb-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 8px 10px 16px; }
-    .sb-logo svg { width: 26px; height: 26px; flex-shrink: 0; }
-    .sb-logo .logo-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; color: var(--text); }
-    .sb-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .sb-item {
-      display: flex; align-items: center; gap: 14px; width: 100%;
-      border: none; background: transparent; color: var(--mid);
-      cursor: pointer; text-align: left; padding: 10px 14px;
-      border-radius: 999px; font-size: 0.9rem; font-weight: 500;
-      transition: background 0.15s, color 0.15s;
-    }
-    .sb-item:hover { background: var(--raise); color: var(--text); }
-    .sb-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 600; }
-    .sb-item .material-symbols-outlined { font-size: 22px; }
-    .sb-foot { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--border); padding-top: 8px; }
-    .sb-foot .sb-item { font-size: 0.85rem; }
-
-    /* ── MAIN / HEADER ───────────────────────────────── */
-    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
-    .content-header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-wrap: wrap; padding: 22px 36px; border-bottom: 1px solid var(--border);
-    }
-    .content-header .page-title { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1.2; }
-    .content-header .page-title span { color: var(--gold); }
-    .content-header .page-sub { font-size: 0.85rem; color: var(--mid); margin-top: 2px; }
-    .content { padding: 36px; }
-
-    /* ── BOTÕES (pílula) ─────────────────────────────── */
-    .btn-outline, .btn-danger, .btn-theme { border-radius: 999px; padding: 9px 18px; font-size: 0.82rem; font-weight: 500; }
-    .btn-outline { background: var(--surface); border: 1px solid var(--border2); color: var(--text); }
-    .btn-outline:hover { background: var(--raise); border-color: var(--border2); color: var(--text); }
-    .btn-danger { background: var(--surface); border: 1px solid var(--border2); color: var(--mid); }
-    .btn-danger:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--gold); color: #fff; border: 1px solid var(--gold);
-      border-radius: 999px; padding: 9px 18px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
-      transition: background 0.15s;
-    }
-    .btn-primary:hover { background: #0a4fbd; }
-    [data-theme="dark"] .btn-primary, [data-theme="dark"] .drawer-save,
-    [data-theme="dark"] .cbtn-import, [data-theme="dark"] .cbtn-confirm { color: #062e6f; }
-    .btn-primary .material-symbols-outlined,
-    .btn-outline .material-symbols-outlined,
-    .btn-danger .material-symbols-outlined { font-size: 18px; }
-
-    /* ── CARDS (16px, sem sombra) ────────────────────── */
-    .stat-card, .table-wrap, .chart-bars, .daily-chart-wrap,
-    .dash-card, .dash-chart-wrap, .confirm-box, .import-box { border-radius: 16px; box-shadow: none; }
-    .stat-card .value { color: var(--text); }
-    .stat-card .value.gold, .dash-card .dk-value.gold { color: var(--gold); }
-    .stat-card .label { color: var(--mid); margin-bottom: 0; }
-    .stat-card { padding: 22px 24px; }
-    .stat-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
-    .stat-ico { color: var(--gold); background: var(--gold-dim); border-radius: 10px; padding: 6px; font-size: 20px; }
-    .chart-title, .dash-section-title, .import-preview-lbl { color: var(--mid); }
-    .kanban-col-body.drag-over { background: var(--gold-dim); outline: 1px dashed var(--gold-bd); }
-
-    /* ── CAMPOS ──────────────────────────────────────── */
-    .filter-bar input, .filter-bar select, .d-select, .d-input, .d-textarea,
-    .dash-daterange input[type="date"], .tag-add-input {
-      border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); color: var(--text);
-    }
-    .filter-bar input:focus, .filter-bar select:focus,
-    .d-select:focus, .d-input:focus, .d-textarea:focus, .tag-add-input:focus {
-      border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim);
-    }
-
-    /* ── TABELA ──────────────────────────────────────── */
-    tbody td { color: var(--mid); }
-    .td-name { color: var(--text); }
-    .import-table td { color: var(--mid); }
-
-    /* ── ETIQUETAS DE STATUS ─────────────────────────── */
-    .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; }
-    .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-    .status-pill.green { color: var(--green); background: var(--green-bg); }
-    .status-pill.amber { color: var(--amber); background: var(--amber-bg); }
-    .status-pill.red   { color: var(--red);   background: var(--red-bg); }
-
-    /* ── BLOCO RESPOSTAS DO DIAGNÓSTICO ──────────────── */
-    .resp-block { background: var(--raise); border: 1px solid var(--border); border-radius: 12px; padding: 2px 14px; margin-top: 8px; }
-    .resp-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-    .resp-row:last-child { border-bottom: none; }
-    .resp-q { flex: 1; font-size: 0.8rem; color: var(--mid); line-height: 1.4; }
-    .resp-a { flex-shrink: 0; font-size: 0.82rem; font-weight: 600; color: var(--text); text-align: right; white-space: nowrap; }
-
-    /* ── PROGRESSO / BADGES / CHIPS ──────────────────── */
-    .bar-track, .bar-fill { border-radius: 999px; }
-    .bar-fill { background: var(--gold); }
-    .badge-fat { border-radius: 999px; }
-    .period-btn, .dash-period button { border-radius: 999px; }
-    .period-btn.active, .dash-period button.active { background: var(--gold-dim); border-color: var(--gold-bd); color: var(--gold); }
-
-    /* ── KANBAN ──────────────────────────────────────── */
-    .kanban-col { border-radius: 16px; }
-    .lead-card { border-radius: 12px; background: var(--surface); }
-    .lead-card:hover { border-color: var(--gold-bd); box-shadow: 0 1px 6px rgba(60,64,67,0.12); }
-    .card-name { color: var(--text); }
-    .card-tag { background: var(--gold-dim); color: var(--gold); border-color: var(--gold-bd); }
-    .card-date { color: var(--mid); }
-
-    /* ── DRAWER / SAVE / CONFIRM (pílula) ────────────── */
-    .drawer-save, .cbtn-confirm, .cbtn-import, .cbtn-cancel, .tag-add-btn { border-radius: 999px; }
-    .drawer-save, .cbtn-import { background: var(--gold); color: #fff; }
-    .drawer-save:hover, .cbtn-import:hover { background: #0a4fbd; }
-    .drawer-close, .import-head button { border-radius: 8px; }
-
-    /* ── CONFIG VIEW ─────────────────────────────────── */
-    .cfg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; max-width: 760px; }
-    .cfg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
-    .cfg-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-    .cfg-card p { font-size: 0.82rem; color: var(--mid); margin-bottom: 16px; }
-    .cfg-card .cfg-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    /* ── RESPONSIVO (sidebar só ícones) ──────────────── */
-    @media (max-width: 1000px) {
-      .sidebar { width: 64px; padding: 16px 8px; }
-      .sb-logo { justify-content: center; padding: 8px 0 16px; }
-      .sb-logo .logo-name, .sb-item .sb-label { display: none; }
-      .sb-item { justify-content: center; padding: 12px; }
-      .content, .content-header { padding-left: 20px; padding-right: 20px; }
-    }
-    @media (max-width: 560px) {
-      .content { padding: 20px 14px; }
-      .content-header { padding: 16px 14px; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- sidebar -->
-  <aside class="sidebar">
-    <a href="index.html" class="sb-logo">
+  <!-- topbar -->
+  <header class="topbar">
+    <a href="index.html" class="logo">
       <svg viewBox="0 0 32 32" fill="none">
-        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#0b57d0" stroke-width="1.5"/>
-        <path d="M16 8L11 17H15L13 24L21 14H17L19 8H16Z" fill="#0b57d0"/>
+        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8A000" stroke-width="1.5"/>
+        <path d="M16 8L11 17H15L13 24L21 14H17L19 8H16Z" fill="#E8A000"/>
       </svg>
       <span class="logo-name">VENTTURE</span>
     </a>
-    <nav class="sb-nav">
-      <button class="sb-item active" data-view="leads" onclick="setView('leads')"><span class="material-symbols-outlined">groups</span><span class="sb-label">Leads</span></button>
-      <button class="sb-item" data-view="crm" onclick="setView('crm')"><span class="material-symbols-outlined">view_kanban</span><span class="sb-label">CRM</span></button>
-      <button class="sb-item" data-view="anuncios" onclick="setView('anuncios')"><span class="material-symbols-outlined">campaign</span><span class="sb-label">Anúncios</span></button>
-      <button class="sb-item" data-view="config" onclick="setView('config')"><span class="material-symbols-outlined">settings</span><span class="sb-label">Configurações</span></button>
-    </nav>
-    <div class="sb-foot">
-      <button class="sb-item" id="btnTheme" onclick="toggleTheme()"><span class="material-symbols-outlined" id="themeIcon">dark_mode</span><span class="sb-label" id="themeLabel">Tema escuro</span></button>
-      <button class="sb-item" onclick="logout()"><span class="material-symbols-outlined">logout</span><span class="sb-label">Sair</span></button>
-    </div>
-  </aside>
-
-  <main class="main">
-
-  <header class="content-header">
-    <div>
-      <h1 class="page-title" id="viewTitle">Leads</h1>
-      <p class="page-sub"><span id="viewSub">Contatos capturados pelo funil</span> <span id="lastUpdate" style="color:var(--dim)"></span></p>
-    </div>
-    <div class="actions" id="headerActions">
-      <button class="btn-primary" onclick="openNewLead()"><span class="material-symbols-outlined">add</span>Novo contato</button>
-      <button class="btn-outline" onclick="importXLSX()"><span class="material-symbols-outlined">upload</span>Importar</button>
-      <input type="file" id="xlsxInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSX(event)" />
-      <button class="btn-outline" onclick="exportCSV()"><span class="material-symbols-outlined">download</span>Exportar</button>
-      <button class="btn-danger" onclick="showConfirm()"><span class="material-symbols-outlined">delete</span>Limpar tudo</button>
+    <div class="topbar-right">
+      <span class="tag-admin">Painel Admin</span>
+      <span style="font-size:0.65rem;color:var(--dim);margin-left:4px;" title="Versão do painel">v2.1</span>
+      <button class="btn-theme" id="btnTheme" onclick="toggleTheme()" title="Alternar tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <span id="themeLabel">Claro</span>
+      </button>
+      <button class="btn-outline" onclick="logout()" style="margin-left:4px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sair
+      </button>
     </div>
   </header>
 
-  <div class="content">
-  <div id="leadsView">
+  <div class="page">
+  <div class="page-inner">
+
+    <!-- header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Leads <span>Capturados</span></h1>
+        <p class="page-sub" id="lastUpdate">—</p>
+      </div>
+      <div class="actions">
+        <button class="btn-outline" onclick="openNewLead()" style="border-color:var(--gold-bd);color:var(--gold);">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Novo contato
+        </button>
+        <button class="btn-outline" onclick="toggleDash(true)" id="btnDash">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="9" height="9" rx="1"/><rect x="13" y="3" width="9" height="9" rx="1"/>
+            <rect x="2" y="14" width="9" height="7" rx="1"/><rect x="13" y="14" width="9" height="7" rx="1"/>
+          </svg>
+          Dashboard
+        </button>
+        <button class="btn-crm" onclick="toggleCRM(true)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="10"/><rect x="14" y="17" width="7" height="4"/>
+          </svg>
+          CRM
+        </button>
+        <button class="btn-outline" onclick="importXLSX()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Importar XLSX
+        </button>
+        <input type="file" id="xlsxInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSX(event)" />
+        <button class="btn-outline" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Exportar CSV
+        </button>
+        <button class="btn-danger" onclick="showConfirm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+          </svg>
+          Limpar tudo
+        </button>
+      </div>
+    </div>
 
     <!-- summary cards -->
     <div class="stats" id="statsCards">
       <div class="stat-card">
-        <div class="stat-top"><span class="label">Total de leads</span><span class="material-symbols-outlined stat-ico">groups</span></div>
+        <div class="label">Total de leads</div>
         <div class="value gold" id="statTotal">0</div>
         <div class="sub">cadastros realizados</div>
       </div>
       <div class="stat-card">
-        <div class="stat-top"><span class="label">Leads hoje</span><span class="material-symbols-outlined stat-ico">today</span></div>
+        <div class="label">Leads hoje</div>
         <div class="value" id="statHoje">0</div>
         <div class="sub" id="statHojeDate">—</div>
       </div>
       <div class="stat-card">
-        <div class="stat-top"><span class="label">Faturamento predominante</span><span class="material-symbols-outlined stat-ico">payments</span></div>
+        <div class="label">Faturamento predominante</div>
         <div class="value gold" id="statTop" style="font-size:1.1rem;padding-top:6px;">—</div>
         <div class="sub" id="statTopPct">—</div>
       </div>
       <div class="stat-card">
-        <div class="stat-top"><span class="label">Com e-mail</span><span class="material-symbols-outlined stat-ico">mail</span></div>
+        <div class="label">Com e-mail</div>
         <div class="value" id="statEmail">0</div>
         <div class="sub">leads com e-mail informado</div>
       </div>
@@ -1432,7 +1312,7 @@
     </div>
 
     <!-- faturamento chart -->
-    <div class="chart-section" id="fatChartSection">
+    <div class="chart-section">
       <div class="chart-title">Distribuição por faixa de faturamento</div>
       <div class="chart-bars" id="chartBars">
         <p style="color:var(--dim);font-size:0.82rem;">Sem dados ainda.</p>
@@ -1448,6 +1328,8 @@
         <div id="fatProgressSub" style="font-size:0.7rem;color:var(--dim);margin-top:6px;"></div>
       </div>
     </div>
+
+  </div><!-- /page-inner -->
 
     <!-- ── TABLE VIEW ─────────────────────────────────── -->
     <div id="tableSection">
@@ -1500,12 +1382,11 @@
     </div>
 
     </div><!-- /tableSection -->
-    </div><!-- /leadsView -->
 
     <!-- ── DASHBOARD VIEW ───────────────────────────── -->
     <div id="dashView" style="display:none;">
       <div class="dash-toolbar">
-        <button class="btn-outline" onclick="setView('leads')">
+        <button class="btn-outline" onclick="toggleDash(false)">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar
         </button>
@@ -1528,7 +1409,7 @@
     <!-- ── CRM VIEW ──────────────────────────────────── -->
     <div id="crmView" style="display:none;">
       <div class="crm-toolbar">
-        <button class="btn-outline" onclick="setView('leads')">
+        <button class="btn-outline" onclick="toggleCRM(false)">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar para tabela
         </button>
@@ -1540,34 +1421,7 @@
       <div class="kanban" id="kanban"></div>
     </div>
 
-    <!-- ── CONFIG VIEW ───────────────────────────────── -->
-    <div id="configView" style="display:none;">
-      <div class="cfg-grid">
-        <div class="cfg-card">
-          <h3><span class="material-symbols-outlined ms-sm">palette</span> Aparência</h3>
-          <p>Escolha o tema do painel.</p>
-          <div class="cfg-row">
-            <button class="btn-outline" onclick="applyTheme('light');localStorage.setItem('vt_theme','light')">Claro</button>
-            <button class="btn-outline" onclick="applyTheme('dark');localStorage.setItem('vt_theme','dark')">Escuro</button>
-          </div>
-        </div>
-        <div class="cfg-card">
-          <h3><span class="material-symbols-outlined ms-sm">account_circle</span> Sessão</h3>
-          <p>Encerre sua sessão neste dispositivo.</p>
-          <div class="cfg-row">
-            <button class="btn-danger" onclick="logout()"><span class="material-symbols-outlined">logout</span> Sair</button>
-          </div>
-        </div>
-        <div class="cfg-card">
-          <h3><span class="material-symbols-outlined ms-sm">info</span> Sobre</h3>
-          <p>Painel de leads Ventture.</p>
-          <div class="cfg-row"><span style="font-size:0.8rem;color:var(--mid)">Versão 2.1</span></div>
-        </div>
-      </div>
-    </div>
-
-    </div><!-- /content -->
-  </main>
+  </div>
 
   <!-- drawer overlay + panel -->
   <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
@@ -1578,7 +1432,7 @@
     <div class="import-box">
       <div class="import-head">
         <h3>Importar Leads da Planilha</h3>
-        <button onclick="closeImport()"><span class="material-symbols-outlined ms-xs">close</span></button>
+        <button onclick="closeImport()">✕</button>
       </div>
       <div class="import-summary">
         <div class="chip gold">Encontrados: <strong id="impTotal">0</strong></div>
@@ -1705,7 +1559,7 @@
         var checked = (lead.tags || []).indexOf(t) >= 0 ? ' checked' : '';
         return '<div class="tag-check-row">' +
           '<label class="tag-check"><input type="checkbox" value="'+esc(t)+'"'+checked+' /> '+esc(t)+'</label>' +
-          '<button class="tag-del-btn" onclick="deleteTag(\''+esc(t)+'\')" title="Excluir tag"><span class="material-symbols-outlined ms-xs">close</span></button>' +
+          '<button class="tag-del-btn" onclick="deleteTag(\''+esc(t)+'\')" title="Excluir tag">✕</button>' +
         '</div>';
       }).join('');
       return checks +
@@ -1727,48 +1581,22 @@
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       var isLight = theme === 'light';
-      var ic = document.getElementById('themeIcon');
-      if (ic) ic.textContent = isLight ? 'dark_mode' : 'light_mode';
-      var lb = document.getElementById('themeLabel');
-      if (lb) lb.textContent = isLight ? 'Tema escuro' : 'Tema claro';
+      document.getElementById('themeIcon').innerHTML = isLight ? SUN_SVG : MOON_SVG;
+      document.getElementById('themeLabel').textContent = isLight ? 'Escuro' : 'Claro';
       if (typeof renderDailyChart === 'function' && Array.isArray(_leads) && _leads.length) renderDailyChart(_leads);
     }
 
     function toggleTheme() {
-      var current = document.documentElement.getAttribute('data-theme') || 'light';
+      var current = document.documentElement.getAttribute('data-theme') || 'dark';
       var next = current === 'light' ? 'dark' : 'light';
       localStorage.setItem('vt_theme', next);
       applyTheme(next);
     }
 
     (function() {
-      var saved = localStorage.getItem('vt_theme') || 'light';
+      var saved = localStorage.getItem('vt_theme') || 'dark';
       applyTheme(saved);
     })();
-
-    /* ── NAVEGAÇÃO (sidebar) ─────────────────────────── */
-    var VIEW_META = {
-      leads:    ['Leads',          'Contatos capturados pelo funil'],
-      crm:      ['CRM',            'Acompanhe cada lead pelas etapas'],
-      anuncios: ['Anúncios',       'Desempenho das campanhas no Meta'],
-      config:   ['Configurações',  'Preferências do painel'],
-    };
-    function setView(name) {
-      var map = { leads: 'leadsView', crm: 'crmView', anuncios: 'dashView', config: 'configView' };
-      Object.keys(map).forEach(function(k) {
-        var el = document.getElementById(map[k]);
-        if (el) el.style.display = (k === name) ? '' : 'none';
-      });
-      document.querySelectorAll('.sb-item[data-view]').forEach(function(b) {
-        b.classList.toggle('active', b.getAttribute('data-view') === name);
-      });
-      var meta = VIEW_META[name] || VIEW_META.leads;
-      var t = document.getElementById('viewTitle'); if (t) t.textContent = meta[0];
-      var s = document.getElementById('viewSub');   if (s) s.textContent = meta[1];
-      var ha = document.getElementById('headerActions'); if (ha) ha.style.display = (name === 'leads') ? 'flex' : 'none';
-      if (name === 'crm') renderKanban();
-      if (name === 'anuncios') dashPreset('30d', document.getElementById('dp30'));
-    }
 
     /* ── AUTH ─────────────────────────────────────────── */
     function getToken() { return sessionStorage.getItem('vt_token'); }
@@ -1833,15 +1661,6 @@
       return dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
     }
 
-    // Padroniza a exibição do telefone: (DD) 9XXXX-XXXX (remove DDI 55 se houver)
-    function fmtPhone(raw) {
-      var d = String(raw || '').replace(/\D/g, '');
-      if (d.length > 11 && d.slice(0, 2) === '55') d = d.slice(2);
-      if (d.length === 11) return '(' + d.slice(0,2) + ') ' + d.slice(2,7) + '-' + d.slice(7);
-      if (d.length === 10) return '(' + d.slice(0,2) + ') ' + d.slice(2,6) + '-' + d.slice(6);
-      return raw || '';
-    }
-
     function todayStr() {
       var d = new Date();
       return String(d.getDate()).padStart(2,'0') + '/' +
@@ -1899,10 +1718,10 @@
       if (!canvas || !_chartSince || !_chartUntil) return;
 
       var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      var gold     = isLight ? '#0b57d0'               : '#8ab4f8';
-      var goldDim  = isLight ? 'rgba(11,87,208,0.12)'  : 'rgba(138,180,248,0.18)';
-      var gridClr  = isLight ? '#e8eaed'               : 'rgba(255,255,255,0.06)';
-      var textClr  = isLight ? '#80868b'               : '#9aa0a6';
+      var gold     = isLight ? '#c87f00'               : '#E8A000';
+      var goldDim  = isLight ? 'rgba(200,127,0,0.15)'  : 'rgba(232,160,0,0.15)';
+      var gridClr  = isLight ? 'rgba(0,0,0,0.07)'      : 'rgba(255,255,255,0.06)';
+      var textClr  = isLight ? '#aaa'                  : '#444';
 
       var dpr = window.devicePixelRatio || 1;
       var W   = canvas.parentElement.clientWidth - 48;
@@ -1968,7 +1787,7 @@
         // Valor acima da barra
         if (count > 0) {
           ctx.fillStyle  = gold;
-          ctx.font       = 'bold 11px Roboto Slab,Georgia,serif';
+          ctx.font       = 'bold 11px Inter,system-ui,sans-serif';
           ctx.textAlign  = 'center';
           ctx.fillText(count, Math.round(x + barW / 2), Math.max(padT + 12, Math.round(y - 5)));
         }
@@ -1977,7 +1796,7 @@
         var showLabel = n <= 14 ? true : n <= 30 ? i % 5 === 0 : i % 15 === 0;
         if (showLabel || i === n - 1) {
           ctx.fillStyle = textClr;
-          ctx.font      = '11px Roboto Slab,Georgia,serif';
+          ctx.font      = '11px Inter,system-ui,sans-serif';
           ctx.textAlign = 'center';
           var lbl = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
           ctx.fillText(lbl, Math.round(x + barW / 2), H - 8);
@@ -1986,7 +1805,7 @@
 
       // Label Y máx
       ctx.fillStyle = textClr;
-      ctx.font      = '11px Roboto Slab,Georgia,serif';
+      ctx.font      = '11px Inter,system-ui,sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(maxCount, padL - 4, padT + 6);
       ctx.fillText('0',      padL - 4, padT + chartH + 6);
@@ -2069,7 +1888,7 @@
         document.getElementById('fatProgressSub').textContent =
           semFat > 0
             ? semFat + ' lead' + (semFat > 1 ? 's' : '') + ' ainda sem faixa definida'
-            : 'Todos os leads estão categorizados';
+            : 'Todos os leads estão categorizados ✓';
       } else {
         progressEl.style.display = 'none';
       }
@@ -2114,10 +1933,10 @@
         return '<tr>' +
           '<td class="td-idx">' + l._idx + '</td>' +
           '<td class="td-name" style="cursor:pointer" onclick="openDrawerByIdx(' + (l._idx-1) + ')">' + esc(l.nome) + '</td>' +
-          '<td class="td-phone">' + esc(fmtPhone(l.whatsapp)) + '</td>' +
+          '<td class="td-phone">' + esc(l.whatsapp) + '</td>' +
           '<td>' + esc(l.email) + '</td>' +
           '<td>' + (l.faturamento ? '<span class="badge-fat ' + FAT_CLASS[fi] + '">' + esc(l.faturamento) + '</span>' : '<span style="color:var(--dim)">—</span>') + '</td>' +
-          '<td>' + (l.origem ? '<span style="font-size:0.7rem;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--gold-dim);color:var(--gold);white-space:nowrap">' + esc(l.origem) + '</span>' : '<span style="font-size:0.72rem;color:var(--dim)">Landing principal</span>') + '</td>' +
+          '<td>' + (l.origem ? '<span style="font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(232,160,0,0.12);color:var(--gold,#E8A000);white-space:nowrap">' + esc(l.origem) + '</span>' : '<span style="font-size:0.72rem;color:var(--dim)">Landing principal</span>') + '</td>' +
           '<td><span style="font-size:0.72rem;color:var(--dim)">' + esc(l.etapa || 'Sem contato') + '</span></td>' +
           '<td class="td-time">' + fmtDate(l.timestamp) + '</td>' +
           '<td class="td-actions"><button class="btn-row-del" onclick="deleteLead(' + l.id + ',event)" title="Excluir lead">' + trashSvg + '</button></td>' +
@@ -2264,7 +2083,7 @@
         html +=   '<span class="col-dot ' + dot + '"></span>';
         html +=   '<span class="col-name">' + esc(stage) + '</span>';
         html +=   '<span class="col-count">' + sl.length + '</span>';
-        html += '<button class="col-del" onclick="removeStage('+si+')" title="Remover etapa"><span class="material-symbols-outlined ms-xs">close</span></button>';
+        html += '<button class="col-del" onclick="removeStage('+si+')" title="Remover etapa">✕</button>';
         html += '</div>';
         html += '<div class="kanban-col-body" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropOn(event,'+si+')">';
 
@@ -2282,8 +2101,8 @@
               lead.tags.forEach(function(t) { html += '<span class="card-tag">'+esc(t)+'</span>'; });
               html += '</div>';
             }
-            html +=   '<div class="card-meta">' + esc(fmtPhone(lead.whatsapp)) + '</div>';
-            if (lead.proxContato) html += '<div class="card-date"><span class="material-symbols-outlined ms-xs">event</span> Próx: '+fmtDateShort(lead.proxContato)+'</div>';
+            html +=   '<div class="card-meta">' + esc(lead.whatsapp) + '</div>';
+            if (lead.proxContato) html += '<div class="card-date">📅 Próx: '+fmtDateShort(lead.proxContato)+'</div>';
             if (lead.comentarios) {
               var preview = lead.comentarios.split('\n')[0].slice(0,50);
               html += '<div class="card-comment">' + esc(preview) + '</div>';
@@ -2303,9 +2122,8 @@
       try { r = JSON.parse(lead.respostas); } catch(e) { return ''; }
       if (!r || typeof r !== 'object') return '';
 
-      function row(q, a, color) {
-        return '<div class="resp-row"><span class="resp-q">' + esc(q) + '</span>' +
-          '<span class="resp-a"' + (color ? ' style="color:' + color + '"' : '') + '>' + a + '</span></div>';
+      function df(label, val) {
+        return '<div class="dfield"><label>' + esc(label) + '</label><span>' + val + '</span></div>';
       }
 
       var rows = '';
@@ -2314,28 +2132,27 @@
       if (Array.isArray(r.quiz)) {
         r.quiz.forEach(function(q) {
           var sim = (q.resposta || '').toLowerCase().charAt(0) === 's';
-          rows += row(q.pergunta, esc(q.resposta || '—'), sim ? 'var(--green)' : 'var(--red)');
+          rows += '<div class="dfield"><label>' + esc(q.pergunta) + '</label>' +
+            '<span style="color:' + (sim ? '#22c55e' : '#ef4444') + ';font-weight:600">' + esc(q.resposta || '—') + '</span></div>';
         });
       }
 
       // Calculadora
       var c = r.calculadora;
       if (c) {
-        if (c.faturamento)             rows += row('Faturamento', esc(c.faturamento));
-        if (c.custosFixos != null)     rows += row('Custos fixos', c.custosFixos + '%');
-        if (c.custosVariaveis != null) rows += row('Custos variáveis', c.custosVariaveis + '%');
-        if (c.custoProduto != null)    rows += row('Custo do produto/serviço', c.custoProduto + '%');
-        if (c.descontoMedio != null)   rows += row('Desconto médio', c.descontoMedio + '%');
+        if (c.faturamento)             rows += df('Faturamento', esc(c.faturamento));
+        if (c.custosFixos != null)     rows += df('Custos fixos', c.custosFixos + '%');
+        if (c.custosVariaveis != null) rows += df('Custos variáveis', c.custosVariaveis + '%');
+        if (c.custoProduto != null)    rows += df('Custo do produto/serviço', c.custoProduto + '%');
+        if (c.descontoMedio != null)   rows += df('Desconto médio', c.descontoMedio + '%');
       }
 
       // Resultado
       if (r.resultado) {
         var t = r.resultado.tier;
-        var _cls = t === 'red' ? 'red' : t === 'gold' ? 'amber' : t === 'green' ? 'green' : '';
-        var _txt = t === 'red' ? 'Crítico' : t === 'gold' ? 'Atenção' : t === 'green' ? 'Saudável' : (t || '—');
-        var val = _cls ? '<span class="status-pill ' + _cls + '">' + _txt + '</span>' : esc(_txt);
-        if (r.resultado.margemPct != null) val += ' <span style="color:var(--mid);font-weight:400">· margem ' + r.resultado.margemPct + '%</span>';
-        rows += row('Resultado', val);
+        var label = t === 'red' ? '🔴 Crítico' : t === 'gold' ? '🟡 Atenção' : t === 'green' ? '🟢 Saudável' : (t || '—');
+        if (r.resultado.margemPct != null) label += ' · margem ' + r.resultado.margemPct + '%';
+        rows += df('Resultado', label);
       }
 
       if (!rows) return '';
@@ -2343,7 +2160,7 @@
       return '<div class="drawer-section-sep"></div>' +
         '<div><label class="field-lbl">Respostas do diagnóstico</label>' +
         '<p class="field-hint">O que a pessoa respondeu no quiz e na calculadora</p>' +
-        '<div class="resp-block">' + rows + '</div></div>';
+        '<div class="drawer-info" style="margin-top:8px">' + rows + '</div></div>';
     }
 
     function openDrawerByIdx(idx) {
@@ -2368,11 +2185,11 @@
             '<div class="drawer-name">'+esc(lead.nome)+'</div>' +
             '<span class="badge-fat '+FAT_CLASS[fi]+'">'+esc(lead.faturamento)+'</span>' +
           '</div>' +
-          '<button class="drawer-close" onclick="closeDrawer()"><span class="material-symbols-outlined ms-xs">close</span></button>' +
+          '<button class="drawer-close" onclick="closeDrawer()">✕</button>' +
         '</div>' +
         '<div class="drawer-body">' +
           '<div class="drawer-info">' +
-            '<div class="dfield"><label>WhatsApp</label><span>'+esc(fmtPhone(lead.whatsapp))+'</span></div>' +
+            '<div class="dfield"><label>WhatsApp</label><span>'+esc(lead.whatsapp)+'</span></div>' +
             '<div class="dfield"><label>E-mail</label><span>'+esc(lead.email)+'</span></div>' +
             '<div class="dfield"><label>Cadastro</label><span>'+fmtDate(lead.timestamp)+'</span></div>' +
           '</div>' +
@@ -2561,7 +2378,7 @@
         document.getElementById('impPreviewBody').innerHTML = preview.map(function(l) {
           return '<tr class="' + (l._isDup ? 'dup-row' : '') + '">' +
             '<td>' + esc(l.nome) + (l._isDup ? '<span class="dup-badge">duplicado</span>' : '') + '</td>' +
-            '<td>' + esc(fmtPhone(l.whatsapp)) + '</td>' +
+            '<td>' + esc(l.whatsapp) + '</td>' +
             '<td>' + esc(l.email) + '</td>' +
             '<td>' + fmtDate(l.timestamp) + '</td>' +
             '</tr>';
@@ -2831,8 +2648,8 @@
 
       var dpr  = window.devicePixelRatio || 1;
       var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      var gold    = isLight ? '#0b57d0' : '#8ab4f8';
-      var goldDim = isLight ? 'rgba(11,87,208,0.12)' : 'rgba(138,180,248,0.18)';
+      var gold    = isLight ? '#c87f00' : '#E8A000';
+      var goldDim = isLight ? 'rgba(200,127,0,0.15)' : 'rgba(232,160,0,0.15)';
       var gridClr = isLight ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.06)';
       var textClr = isLight ? '#aaa' : '#888';
 
@@ -2875,7 +2692,7 @@
           roundRect(ctx, Math.round(x), Math.round(y), Math.round(barW), barH, Math.min(3, barW/2));
           ctx.fill();
           ctx.fillStyle = gold;
-          ctx.font = 'bold 11px Roboto Slab,Georgia,serif';
+          ctx.font = 'bold 11px Inter,system-ui,sans-serif';
           ctx.textAlign = 'center';
           ctx.fillText(count, Math.round(x + barW/2), Math.max(padT+12, Math.round(y-5)));
         } else {
@@ -2888,7 +2705,7 @@
         var step5 = n <= 7 ? 1 : n <= 14 ? 2 : n <= 30 ? 5 : 7;
         if (i % step5 === 0 || i === n - 1) {
           ctx.fillStyle = textClr;
-          ctx.font = '10px Roboto Slab,Georgia,serif';
+          ctx.font = '10px Inter,system-ui,sans-serif';
           ctx.textAlign = 'center';
           var parts = day.split('-');
           ctx.fillText(parts[2] + '/' + parts[1], Math.round(x + barW/2), H - 8);
@@ -2897,7 +2714,7 @@
 
       // Label Y
       ctx.fillStyle = textClr;
-      ctx.font = '10px Roboto Slab,Georgia,serif';
+      ctx.font = '10px Inter,system-ui,sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(maxCount, padL - 4, padT + 6);
       ctx.fillText('0', padL - 4, padT + chartH + 6);
@@ -2924,7 +2741,6 @@
       await loadLeads();
       renderStats(_leads);
       renderTable();
-      setView('leads');
     }
 
     init();

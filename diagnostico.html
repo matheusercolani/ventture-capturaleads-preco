@@ -624,16 +624,18 @@
 
     // Faturamento: rótulo → valor representativo (R$/mês) p/ projeção
     var FAT_OPTIONS = [
-      { label: 'Até 50 mil',        value: 40000 },
-      { label: 'De 50 a 100 mil',   value: 75000 },
-      { label: 'De 100 a 400 mil',  value: 250000 },
-      { label: 'Acima de 400 mil',  value: 500000 },
+      { label: 'Até R$20 mil',      value: 15000 },
+      { label: 'Até R$50 mil',      value: 35000 },
+      { label: 'Até R$100 mil',     value: 75000 },
+      { label: 'Até R$200 mil',     value: 150000 },
+      { label: 'Mais de R$200 mil', value: 300000 },
     ];
     var FAT_EVENT = {
-      'Até 50 mil':       'Lead50k',
-      'De 50 a 100 mil':  'Lead100k',
-      'De 100 a 400 mil': 'Lead400k',
-      'Acima de 400 mil': 'Lead400kMais',
+      'Até R$20 mil':      'Lead20k',
+      'Até R$50 mil':      'Lead50k',
+      'Até R$100 mil':     'Lead100k',
+      'Até R$200 mil':     'Lead200k',
+      'Mais de R$200 mil': 'Lead200kMais',
     };
 
     // Passos da calculadora (sliders %)
